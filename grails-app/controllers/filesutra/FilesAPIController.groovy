@@ -32,38 +32,43 @@ class FilesAPIController {
                 itemResponse.push(["id":"untitled","type":"folder","name":"Not in folder"])
             }
         items.each {
+            println it;
             if(folderId == "root"){
+                println "-------------------------------------ROOT"
+                println it.mimeType
                 if(it.mimeType == "application/vnd.google-apps.folder"){
                     def mItem = new ApiResponse.Item()
                     mItem.id = it.id
                     mItem.type = "folder"
-                    mItem.name = it.title
-                    mItem.size = it.fileSize ? it.fileSize as long : null
+                    mItem.name = it.name
+                    mItem.size = it.size
                     itemResponse.push(mItem)
                 }
-            }else {
-                if(it.fileExtension == "jpg" || it.fileExtension == "png" || it.fileExtension == "JPG" || it.fileExtension == "PNG"){
+            } else {
+                println it.mimeType
+                if(it.mimeType =~ /image\/*/) {
                     def mItem = new ApiResponse.Item()
                     mItem.id = it.id
                     mItem.type = "file"
-                    mItem.name = it.title
+                    mItem.name = it.name
                     mItem.thumbnail =it.thumbnailLink
                     mItem.iconurl =it.webContentLink
-                    mItem.size = it.fileSize ? it.fileSize as long : null
+                    mItem.size = it.size
                     mItem.mimetype = it.mimeType
                     itemResponse.push(mItem)
                 }else if(it.mimeType == "application/vnd.google-apps.folder" && folderId != "untitled"){
                     def mItem = new ApiResponse.Item()
                     mItem.id = it.id
                     mItem.type = "folder"
-                    mItem.name = it.title
-                    mItem.size = it.fileSize ? it.fileSize as long : null
+                    mItem.name = it.name
+                    mItem.size = it.size
                     itemResponse.push(mItem)
                 }
             }
         }
         render itemResponse as JSON
     }
+
     def facebookFiles(String folderId, String after) {
         def typeSize;
         folderId = folderId ? folderId : "facebook"
@@ -217,7 +222,9 @@ class FilesAPIController {
     def importGoogleFile() {
         def input = request.JSON
         Access access = Access.get(session.googleAccessId)
-        File file = new File(fileId: input.fileId, type: "GOOGLE", access: access,
+        java.io.File file = googleService.downloadFile(input, access);
+        log.debug "Downloaded file absolute path ${file.getAbsolutePath()}"
+        /*File file = new File(fileId: input.fileId, type: "GOOGLE", access: access,
                 name: input.fileName, size: input.size)
         file.localFileId = Utils.randomString(15)
         file.save(flush: true, failOnError: true)
@@ -228,7 +235,12 @@ class FilesAPIController {
                         "/download/$file.localFileId",
                 size: file.size,
                 mimetype: input.mimetype
-        ]
+                ]*/
+        def fileResponse = [
+        originalFilename:file.name,
+        url:file.getAbsolutePath(),
+        size:file.length(),
+        contentType:input.mimetype]
         render fileResponse as JSON
     }
 
@@ -242,7 +254,7 @@ class FilesAPIController {
         def fileResponse = [
                 filename: file.name,
                 url: request.isSecure() ? "https://" : "http://" +
-                        request.serverName + (request.serverPort && request.serverPort != 80 ? ":$request.serverPort" : "") +
+                        request.serverName +
                         "/download/$file.localFileId",
                 size: file.size,
                 mimetype: input.mimetype
@@ -278,7 +290,7 @@ class FilesAPIController {
         def fileResponse = [
                 filename: file.name,
                 url: request.isSecure() ? "https://" : "http://" +
-                        request.serverName + (request.serverPort && request.serverPort != 80 ? ":$request.serverPort" : "") +
+                        request.serverName +
                         "/download/$file.localFileId",
                 size: file.size,
                 mimetype: input.mimetype

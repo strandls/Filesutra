@@ -2,7 +2,7 @@ dataSource {
     pooled = true
     driverClassName = "org.postgresql.Driver"
     dialect = org.hibernate.dialect.PostgreSQL9Dialect
-    url = "jdbc:postgresql://localhost:5432/cfilesdb"
+    url = "jdbc:postgresql://localhost:5432/filesutradb"
     // Moved to external config file
     username = ''
     password = ''

@@ -20,7 +20,7 @@
   <script src="/js/controllers.js"></script>
   <script src="/js/services.js"></script>
   <script src="/js/jquery.form.js"></script>
-  <script src="http://filesutra.com/js/filesutra.js"></script>
+  <!--script src="http://filesutra.com/js/filesutra.js"></script-->
 
   <style>
     li a {
@@ -75,14 +75,35 @@
   <br/>
     <div class="col-md-3 col-sm-3">
     <ul class="list-group">
-     <li class="list-group-item" ng-click="selectApp('Local')">
-          <a >My Computer</a>
-        </li>
-        <li class="list-group-item" ng-click="selectApp('Google')">
-          <a >Google Drive</a>
-          <a ng-if="isConnected('Google')" ng-click="logout('Google')" class="pull-right">logout</a>
-        </li>
-        <!--li class="list-group-item">
+    <li class="list-group-item" ng-click="selectApp('Local')">
+    <a >My Computer</a>
+    </li>
+    <li class="list-group-item"  ng-click="selectApp('Facebook')">
+    <a>Facebook</a>
+    <a ng-if="isConnected('Facebook')" ng-click="logout('Facebook')" class="pull-right">logout</a>
+    </li>
+    <li class="list-group-item" ng-click="selectApp('Google')">
+    <a >Google Drive</a>
+    <a ng-if="isConnected('Google')" ng-click="logout('Google')" class="pull-right">logout</a>
+    </li>
+
+    <li class="list-group-item" ng-click="selectApp('Flickr')">
+    <a >Flickr</a>
+    <a ng-if="isConnected('Flickr')" ng-click="logout('Flickr')" class="pull-right">logout</a>
+    </li>
+    <li class="list-group-item" ng-click="selectApp('Picasa')">
+    <a>Picasa</a>
+    <a ng-if="isConnected('Picasa')" ng-click="logout('Picasa')" class="pull-right">logout</a>
+    </li>
+    <li class="list-group-item" ng-click="selectApp('Dropbox')">
+    <a>Dropbox</a>
+    <a ng-if="isConnected('Dropbox')" ng-click="logout('Dropbox')" class="pull-right">logout</a>
+    </li>
+    <li class="list-group-item" ng-click="selectApp('Wikimedia')">
+    <a>Wikimedia</a>
+    <a ng-if="isConnected('Wikimedia')" ng-click="logout('Wikimedia')" class="pull-right">logout</a>
+    </li>
+    <!--li class="list-group-item">
           <a ng-click="selectApp('Box')">Box</a>
           <a ng-if="isConnected('Box')" ng-click="logout('Box')" class="pull-right">logout</a>
         </li>
@@ -94,23 +115,7 @@
           <a ng-click="selectApp('AmazonCloudDrive')">Amazon Cloud Drive</a>
           <a ng-if="isConnected('AmazonCloudDrive')" ng-click="logout('AmazonCloudDrive')" class="pull-right">logout</a>
         </li-->
-        <li class="list-group-item"  ng-click="selectApp('Facebook')">
-          <a>Facebook</a>
-          <a ng-if="isConnected('Facebook')" ng-click="logout('Facebook')" class="pull-right">logout</a>
-        </li>
-         <li class="list-group-item" ng-click="selectApp('Flickr')">
-          <a >Flickr</a>
-          <a ng-if="isConnected('Flickr')" ng-click="logout('Flickr')" class="pull-right">logout</a>
-        </li>
-        <li class="list-group-item" ng-click="selectApp('Picasa')">
-          <a>Picasa</a>
-          <a ng-if="isConnected('Picasa')" ng-click="logout('Picasa')" class="pull-right">logout</a>
-        </li>
-        <!--li class="list-group-item" ng-click="selectApp('Dropbox')">
-          <a>Dropbox</a>
-          <a ng-if="isConnected('Dropbox')" ng-click="logout('Dropbox')" class="pull-right">logout</a>
-        </li-->
-      </ul>
+              </ul>
     </div>
     <div class="col-md-9 col-sm-9">
     <a class="btn btn-primary pull-left glyphicon glyphicon-chevron-left" ng-if="showBackButton" ng-click="backButton()"></a>

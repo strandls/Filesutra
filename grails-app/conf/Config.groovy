@@ -100,15 +100,28 @@ grails.hibernate.pass.readonly = false
 grails.hibernate.osiv.readonly = false
 
 environments {
-    development {
-        grails.logging.jul.usebridge = true
+development {
+    grails.logging.jul.usebridge = true
+    grails.serverURL = "http://localhost.filesutra.indiabiodiversity.org"
+    fileOps{
+        resources {
+            app.rootDir = "${userHome}/git/biodiv/app-conf"
+            rootDir = "${app.rootDir}/fileops"
+        }
     }
-    production {
-        grails.logging.jul.usebridge = false
-        // TODO: grails.serverURL = "http://www.changeme.com"
+
+}
+production {
+    grails.logging.jul.usebridge = false
+    grails.serverURL = "http://www.filesutra.indiabiodiversity.org"
+    fileOps{
+        resources {
+            app.rootDir = "/apps/biodiv"
+            rootDir = "${app.rootDir}/fileops"
+        }
     }
 }
-
+}
 // log4j configuration
 log4j.main = {
     // Example of changing the log pattern for the default console appender:
@@ -129,20 +142,21 @@ log4j.main = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-//    debug 'org.apache.http.wire'
+    debug 'org.apache.http.wire'
+    debug 'filesutra.*'
+    debug   'com.google.api.client.googleapis.auth.oauth2.*'
+    debug   'com.google.api.services.drive.*'
+    debug   'com.google.api.client.auth.oauth2'
+    debug   'com.google.api.client.auth.oauth2.*'
+    debug   'com.google.api.client.auth.oauth2.Credential'
+
 }
 
-grails.app.context = '/'
+//grails.app.context = '/filesutra'
 
 grails.plugin.databasemigration.updateOnStart = true
 grails.plugin.databasemigration.updateOnStartFileNames = ['changelog.groovy']
 
-fileOps{
-    resources {
-        app.rootDir = "/apps/biodiv"
-        rootDir = "${app.rootDir}/fileops"
-    }
-}
 grails {
     plugin {
         //Cookie-Session-Plugin Configuration
