@@ -111,7 +111,17 @@ development {
     }
 
 }
-production {
+pamba {
+    grails.logging.jul.usebridge = false
+    grails.serverURL = "http://www.filesutra.pamba.strandls.com"
+    fileOps{
+        resources {
+            app.rootDir = "/apps/biodiv"
+            rootDir = "${app.rootDir}/fileops"
+        }
+    }
+}
+kk {
     grails.logging.jul.usebridge = false
     grails.serverURL = "http://www.filesutra.indiabiodiversity.org"
     fileOps{
