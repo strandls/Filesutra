@@ -1,12 +1,42 @@
 package filesutra
 
+import com.flickr4java.flickr.FlickrException;
+import com.flickr4java.flickr.REST;
+import com.flickr4java.flickr.auth.Auth;
+import com.flickr4java.flickr.auth.AuthInterface;
+import com.flickr4java.flickr.auth.Permission;
+import com.flickr4java.flickr.util.IOUtilities;
+import com.flickr4java.flickr.Flickr as FlickrJ;
+import com.flickr4java.flickr.FlickrException;
+import com.flickr4java.flickr.REST;
+import com.flickr4java.flickr.RequestContext;
+import com.flickr4java.flickr.auth.Auth;
+import com.flickr4java.flickr.auth.AuthInterface;
+import com.flickr4java.flickr.auth.Permission;
+import com.flickr4java.flickr.photos.Photo;
+import com.flickr4java.flickr.photos.PhotoList;
+import com.flickr4java.flickr.photos.PhotosInterface;
+import com.flickr4java.flickr.photos.Size;
+import com.flickr4java.flickr.photosets.Photoset;
+import com.flickr4java.flickr.photosets.PhotosetsInterface;
+import com.flickr4java.flickr.util.AuthStore;
+import com.flickr4java.flickr.util.FileAuthStore;
+
+import org.scribe.model.Token;
+import org.scribe.model.Verifier;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.Scanner;
+import java.nio.file.Files;
+
 import grails.util.Holders
 import groovyx.net.http.RESTClient
 import java.security.MessageDigest
 import grails.converters.JSON
 import org.codehaus.groovy.grails.web.json.JSONObject;
-
-
+import java.io.File;
 
 import static groovyx.net.http.ContentType.URLENC
 
@@ -24,36 +54,116 @@ class Flickr {
     private static final String AUTH_URL = "https://flickr.com/services/auth"
     private static final String API_URL = "https://api.flickr.com"
 
-    static def getLoginUrl() {
+    private static Map tokenSecretsCache = new HashMap();
+    private static FlickrJ flickr;
+
+    static FlickrJ getFlickrJ() {
+        if(flickr == null) {
+            flickr = new FlickrJ(CLIENT_ID, CLIENT_SECRET, new REST());
+            FlickrJ.debugStream = true;
+        }
+        return flickr;
+    }
+
+     static def getLoginUrl() {
+        /*
         def sig = getSignature();
         def params = [
                 api_key    : CLIENT_ID,
                 perms        : "read",
                 api_sig      :sig
-        ]
-        def url = "$AUTH_URL?" + params.collect { k, v -> "$k=$v" }.join('&')
-        return url
+                ]
+                def url = "$AUTH_URL?" + params.collect { k, v -> "$k=$v" }.join('&')
+                return url
+         */
+        flickr = getFlickrJ();
+        AuthInterface authInterface = flickr.getAuthInterface();
+
+        Token token = authInterface.getRequestToken(REDIRECT_URI);
+        tokenSecretsCache.put(token.getToken(), token.getSecret());
+        System.out.println("token: " + token);
+
+        String url = authInterface.getAuthorizationUrl(token, Permission.READ);
+        return url;
     }
-    
-    static def exchangeCode(String code) {
-         def frobSig = getFrobSignature(code);
-         def restClient = new RESTClient(API_URL)
-         def resp = restClient.get(path: "/services/rest", params : [method: "flickr.auth.getToken",api_key: CLIENT_ID, frob: code, api_sig: frobSig])
-         String val = resp.data;
-         val = val.substring(0, val.length() - 5);
+
+    static def exchangeCode(String oauth_token, String oauth_verifier) {
+        /*
+        def frobSig = getFrobSignature(code);
+        def restClient = new RESTClient(API_URL)
+        def resp = restClient.get(path: "/services/rest", params : [method: "flickr.auth.getToken",api_key: CLIENT_ID, frob: code, api_sig: frobSig])
+        String val = resp.data;
+        val = val.substring(0, val.length() - 5);
         return [
-                accessToken: val,
-                //refreshToken: resp.data.refresh_token
+accessToken: val,
+username:resp.data.auth.user.@username.text()
+//refreshToken: resp.data.refresh_token
+]
+         */
+        AuthInterface authInterface = flickr.getAuthInterface();
+
+        //Token token = authInterface.getRequestToken(REDIRECT_URI);
+        Token requestToken = authInterface.getAccessToken(new Token(oauth_token,tokenSecretsCache.get(oauth_token)), new Verifier(oauth_verifier));
+        tokenSecretsCache.remove(oauth_token);
+        System.out.println("Authentication success");
+
+        Auth auth = authInterface.checkToken(requestToken);
+        RequestContext.getRequestContext().setAuth(auth);
+        return  [
+        accessToken: requestToken.getToken(),
+        username:auth.getUser().getId(),
+        name:auth.getUser().getUsername(),
+        auth:auth
         ]
+
     }
 
+    static def listItems(String folderId, String after, Access access, Auth auth) {
+        PhotosetsInterface pi = flickr.getPhotosetsInterface();
+        PhotosInterface photoInt = flickr.getPhotosInterface();
+        List allPhotos = [];
+        List allPhotoSets =  [];
 
+        String nsid = access.emailId;
+        Iterator sets = pi.getList(nsid).getPhotosets().iterator();
+        RequestContext.getRequestContext().setAuth(auth);
+        while (sets.hasNext()) {
+            Photoset set = (Photoset) sets.next();
+            if(folderId.equals(set.getId())) {
+                PhotoList photos = pi.getPhotos(set.getId(), 500, 1);
+                allPhotos.addAll(photos);
+            } else {
+                allPhotoSets << set;
+            }
+        }
+        if(folderId.equals('untitled')) {
+            try {
+                int notInSetPage = 1;
+                Collection notInASet = new ArrayList();
+                while (true) {
+                    Collection nis = photoInt.getNotInSet(50, notInSetPage);
+                    notInASet.addAll(nis);
+                    if (nis.size() < 50) {
+                        break;
+                    }
+                    notInSetPage++;
+                }
+                allPhotos.addAll(notInASet);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return ['photoset':allPhotoSets, 'photo':allPhotos];
+    }
+
+/*
     private static String getSignature(){
         String claimedContent = CLIENT_SECRET+"api_key"+CLIENT_ID+"permsread";
         String hashFromContent = claimedContent.encodeAsMD5();
         return hashFromContent;
     }
-     private static String getFrobSignature(String frobVal){
+
+    private static String getFrobSignature(String frobVal){
         String claimedContent = CLIENT_SECRET+"api_key"+CLIENT_ID+"frob"+frobVal+"methodflickr.auth.getToken";
         String hashFromContent = claimedContent.encodeAsMD5();
         return hashFromContent;
@@ -65,32 +175,32 @@ class Flickr {
         return hashFromContent;
     }
 
-
     static def getEmailId(String accessToken) {
         def frobSig = getTokenSignature(accessToken,"flickr.test.login");
         def restClient = new RESTClient(API_URL)
         def resp = restClient.get(path: "/services/rest", params : [method: "flickr.test.login",api_key: CLIENT_ID, auth_token: accessToken, api_sig: frobSig])
         String name = resp.data.user;      
-       
+
         return name;
     }
 
-    /*static def listItems(String folderId, String accessToken) {
-        String newValue = accessToken+"extrasurl_mformatjson"
-        def frobSig = getTokenSignature(newValue,"flickr.people.getPhotosnojsoncallback1per_page500user_idme");
-        def restClient = new RESTClient(API_URL)
-        def resp = restClient.get(path: "/services/rest/", params : [method: "flickr.people.getPhotos",api_key: CLIENT_ID, auth_token: accessToken, api_sig: frobSig,user_id:"me", format:"json",nojsoncallback:"1",extras:"url_m",per_page:"500"])
-        return resp.data.photos.photo
-    }*/
+    static def listItems(String folderId, String accessToken) {
+      String newValue = accessToken+"extrasurl_mformatjson"
+      def frobSig = getTokenSignature(newValue,"flickr.people.getPhotosnojsoncallback1per_page500user_idme");
+      def restClient = new RESTClient(API_URL)
+      def resp = restClient.get(path: "/services/rest/", params : [method: "flickr.people.getPhotos",api_key: CLIENT_ID, auth_token: accessToken, api_sig: frobSig,user_id:"me", format:"json",nojsoncallback:"1",extras:"url_m",per_page:"500"])
+      return resp.data.photos.photo
+}
+
     static def listItems(String folderId, String after, String accessToken) {
-        
+
         def restClient = new RESTClient(API_URL)
         if(folderId == "flickr"){
-             String newValue = accessToken+"formatjson"
-             def frobSig = getTokenSignature(newValue,"flickr.photosets.getListnojsoncallback1");
-             def resp = restClient.get(path: "/services/rest/", params : [method: "flickr.photosets.getList",api_key: CLIENT_ID, auth_token: accessToken, api_sig: frobSig,format:"json",nojsoncallback:"1"])
+            String newValue = accessToken+"formatjson"
+            def frobSig = getTokenSignature(newValue,"flickr.photosets.getListnojsoncallback1");
+            def resp = restClient.get(path: "/services/rest/", params : [method: "flickr.photosets.getList",api_key: CLIENT_ID, auth_token: accessToken, api_sig: frobSig,format:"json",nojsoncallback:"1"])
 
-             return resp.data.photosets
+            return resp.data.photosets
         }else if(folderId == "untitled"){
             def pageNumber;
             if(after!=''){
@@ -141,7 +251,6 @@ class Flickr {
         return connection
     }
 
-
     static def refreshToken(String refreshToken) {
         def restClient = new RESTClient(API_URL)
         def resp = restClient.post(
@@ -151,4 +260,25 @@ class Flickr {
                 requestContentType: URLENC)
         return resp.data.access_token
     }
+*/
+
+   static File downloadFile(input, Access access) {
+
+        PhotosInterface photoInt = flickr.getPhotosInterface();
+        Photo photo = photoInt.getPhoto(input.fileId);
+
+        File file = new File(grailsApplication.config.fileOps.resources.rootDir+File.separator+photo.title+".jpg");
+        OutputStream out = new FileOutputStream(file);
+        def initialStream = photo.getOriginalAsStream();
+        try {
+            byte[] buffer = new byte[8 * 1024];
+            int bytesRead;
+            while ((bytesRead = initialStream.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+        } finally {
+            out.close();
+        }
+        return file;
+   }
 }

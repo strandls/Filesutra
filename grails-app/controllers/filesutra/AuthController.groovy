@@ -59,13 +59,16 @@ class AuthController {
         }
         redirect(uri: '/picker#Facebook')
     }
-    def flickrCallback(String frob) {
-        if (frob) {
-           def accessInfo = Flickr.exchangeCode(frob);
-           def emailId = Flickr.getEmailId(accessInfo.accessToken)
+    def flickrCallback(String oauth_token, String oauth_verifier) {
+        println params
+        println 'flickrCallback'
+        if (oauth_verifier) {
+           def accessInfo = Flickr.exchangeCode(oauth_token, oauth_verifier);
+           def emailId = accessInfo.username;//Flickr.getEmailId(accessInfo.accessToken)
            Access flickrAccess = authService.flickrLogin(emailId, accessInfo)
             if (flickrAccess) {
                 session.flickrAccessId = flickrAccess.id
+                session.flickrAuth = accessInfo.auth;
             }
         }
         redirect(uri: '/picker#Flickr')

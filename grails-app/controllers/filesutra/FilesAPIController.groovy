@@ -102,15 +102,18 @@ class FilesAPIController {
    def flickrFiles(String folderId, String after) {
         def typeSize ;
         folderId = folderId ? folderId : "flickr"
-        def items =  flickrService.listItems(folderId, after, Access.get(session.flickrAccessId))
+        def items =  flickrService.listItems(folderId, after, Access.get(session.flickrAccessId), session.flickrAuth)
+        log.debug "Flickr items : "
+        log.debug items
         def itemResponse = []
+        if(items) { 
         if(folderId == "flickr"){
             itemResponse.push(["id":"untitled","type":"folder","name":"Not in folder"])
-            items.photoset.each {
+            items.photoset?.each {
                 def mItem = new ApiResponse.Item();
                 mItem.id = it.id
                 mItem.type = "folder"
-                mItem.name = it.title["_content"]
+                mItem.name = it.title
                 itemResponse.push(mItem)
             }
             render(contentType: 'text/json') {
@@ -122,18 +125,19 @@ class FilesAPIController {
                 mItem.id = it.id
                 mItem.type = "file"
                 mItem.name = it.title
-                mItem.iconurl = it.url_m
-                typeSize = getMimeType(mItem.iconurl)
+                mItem.iconurl = it.getSmallSquareUrl()
+                /*typeSize = getMimeType(mItem.iconurl)
                 mItem.size = typeSize[1]
                 mItem.mimetype = typeSize[0]
-                itemResponse.push(mItem)
+                */itemResponse.push(mItem)
             }
             render(contentType: 'text/json') {
                 [listresponse:itemResponse,afterval:items.page]
             }
         }
-    
+        }
     }
+
     def picasaFiles(String folderId) {
         folderId = folderId ? folderId : "picasa"
         def items =  picasaService.listItems(folderId, Access.get(session.picasaAccessId))
@@ -246,6 +250,7 @@ class FilesAPIController {
 
     def importFacebookFile() {
         def input = request.JSON
+        println input
         Access access = Access.get(session.facebookAccessId)
         File file = new File(fileId: input.fileId, type: "FACEBOOK", access: access,
                 name: input.fileName, size: input.size)
@@ -265,7 +270,17 @@ class FilesAPIController {
      def importFlickrFile() {
         def input = request.JSON
         Access access = Access.get(session.flickrAccessId)
-        File file = new File(fileId: input.fileId, type: "FLICKR", access: access,
+        java.io.File file = flickrService.downloadFile(input, access);
+        println file
+        log.debug "Downloaded file absolute path ${file.getAbsolutePath()}"
+        def fileResponse = [
+        originalFilename:file.name,
+        url:file.getAbsolutePath(),
+        size:file.length(),
+        contentType:input.mimetype]
+        render fileResponse as JSON
+ 
+        /*File file = new File(fileId: input.fileId, type: "FLICKR", access: access,
                 name: input.fileName, size: input.size)
         file.localFileId = Utils.randomString(15)
         file.save(flush: true, failOnError: true)
@@ -277,7 +292,7 @@ class FilesAPIController {
                 size: file.size,
                 mimetype: input.mimetype
         ]
-        render fileResponse as JSON
+        render fileResponse as JSON*/
     }
 
      def importPicasaFile() {

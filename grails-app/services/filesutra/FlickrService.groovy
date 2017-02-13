@@ -8,13 +8,12 @@ class FlickrService {
 
     def callAPI(Closure c, Access access) {
         def accessInfo = JSON.parse(access.accessInfo)
-            c(accessInfo.accessToken)
-       
+        c(accessInfo.accessToken)
     }
 
-    def listItems(String folderId, String after, Access access) {
+    def listItems(String folderId, String after, Access access, flickrAuth) {
         callAPI({ accessToken->
-            return Flickr.listItems(folderId, after, accessToken)
+            return Flickr.listItems(folderId, after, access, flickrAuth)
         }, access)
     }
 
@@ -22,5 +21,9 @@ class FlickrService {
         callAPI({ accessToken ->
             return Flickr.getDownloadUrlConnection(fileId, accessToken)
         }, access)
+    }
+
+    java.io.File downloadFile(input, Access access) {
+       return Flickr.downloadFile(input, access); 
     }
 }
