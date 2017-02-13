@@ -277,7 +277,7 @@ class FilesAPIController {
         originalFilename:file.name,
         url:file.getAbsolutePath(),
         size:file.length(),
-        contentType:input.mimetype]
+        contentType:'image/jpg']
         render fileResponse as JSON
  
         /*File file = new File(fileId: input.fileId, type: "FLICKR", access: access,
