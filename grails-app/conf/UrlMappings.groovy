@@ -10,7 +10,7 @@ class UrlMappings {
         "/api/files/box"                  (controller: "FilesAPI", action: "boxFiles")
         "/api/files/onedrive"             (controller: "FilesAPI", action: "onedriveFiles")
         "/api/files/amazonclouddrive"     (controller: "FilesAPI", action: "amazonFiles")
-        "/api/files/wikipedia"              (controller: "FilesAPI", action: "wikipediaFiles")
+        "/api/files/wikimedia"              (controller: "FilesAPI", action: "wikimediaFiles")
 
         "/api/import/google"                (controller: "FilesAPI", action: "importGoogleFile")
         "/api/import/facebook"              (controller: "FilesAPI", action: "importFacebookFile")
@@ -20,7 +20,7 @@ class UrlMappings {
         "/api/import/dropbox"               (controller: "FilesAPI", action: "importDropboxFile")
         "/api/import/onedrive"              (controller: "FilesAPI", action: "importOnedriveFile")
         "/api/import/amazonclouddrive"      (controller: "FilesAPI", action: "importAmazonFile")
-        "/api/import/wikipedia"              (controller: "FilesAPI", action: "importWikipediaFile")
+        "/api/import/wikimedia"              (controller: "FilesAPI", action: "importWikimediaFile")
 
         "/download/$id"         (controller: "File", action: "downloadFile")
 

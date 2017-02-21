@@ -256,7 +256,7 @@ class FilesAPIController {
         render itemResponse as JSON
     }
 
-    def wikipediaFiles(String folderId) {
+    def wikimediaFiles(String folderId) {
         try {
             def typeSize;
             folderId = folderId ? folderId : "wikipedia"
@@ -450,7 +450,7 @@ class FilesAPIController {
         return [type, size]
     }
 
-    def importWikipediaFile() {
+    def importWikimediaFile() {
         def input = request.JSON
         Access access = Access.get(session.wikipediaAccessId)
         java.io.File file = wikipediaService.downloadFile(input, access);

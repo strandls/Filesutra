@@ -74,11 +74,11 @@
   <div class="row" ng-controller="AppCtrl" ng-init="init(${appSettings})">
       <div class="row">
        
-        <form id="wikiLoginForm" action='wikipediaCallback' method='POST' class="form-horizontal" name='loginForm'>  
+        <form id="wikiLoginForm" action='wikimediaCallback' method='POST' class="form-horizontal" name='loginForm'>  
         
         <div class="control-group">         
         <label class="control-label" for="username">
-        Wikipedia username
+        Wikimedia username
         </label>
         <div class="controls">
         <input id="wikiUser" class="input-xlarge focused" type="text" name="username">

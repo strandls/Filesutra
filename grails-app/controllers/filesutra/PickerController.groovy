@@ -31,7 +31,7 @@ class PickerController {
             connectedApps.push("AmazonCloudDrive")
         }
         if (session.wikipediaAccessId) {
-            connectedApps.push("Wikipedia")
+            connectedApps.push("Wikimedia")
         }
         def appSettings = [
                 connectedApps : connectedApps

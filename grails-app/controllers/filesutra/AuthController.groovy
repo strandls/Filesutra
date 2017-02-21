@@ -40,11 +40,11 @@ class AuthController {
         redirect(url: AmazonCloudDrive.getLoginUrl())
     }
 
-    def wikipedia() {
+    def wikimedia() {
         redirect(url:Wikipedia.getLoginUrl())
     }
     
-    def wikipediaLogin() {
+    def wikimediaLogin() {
     }
 
     def googleCallback(String code) {
@@ -152,7 +152,7 @@ class AuthController {
         redirect(uri: '/picker#AmazonCloudDrive')
     }
 
-    def wikipediaCallback(String username, String password) {
+    def wikimediaCallback(String username, String password) {
         if (username != null && password != null) {
            def accessInfo = Wikipedia.exchangeCode(username, password)
            def emailId = Wikipedia.getEmailId(accessInfo.accessToken)
@@ -161,7 +161,7 @@ class AuthController {
                 session.wikipediaAccessId = wikipediaAccess.id
             }
         }
-        redirect(uri: '/picker#Wikipedia')
+        redirect(uri: '/picker#Wikimedia')
     }
 
     def logout(String app) {
