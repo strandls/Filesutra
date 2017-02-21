@@ -96,4 +96,16 @@ class AuthService {
         access.save(flush: true, failOnError: true)
         return access
     }
+
+    Access wikipediaLogin(emailId, accessInfo) {
+        // save google info
+        Access access = Access.findByEmailIdAndType(emailId, StorageType.WIKIPEDIA)
+        if (!access) {
+            access = new Access(type: StorageType.WIKIPEDIA, emailId: emailId)
+        } 
+        access.accessInfo = Utils.jsonToString(accessInfo)
+        access.save(flush: true, failOnError: true)
+        return access
+    }
+
 }

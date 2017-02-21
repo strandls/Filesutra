@@ -11,13 +11,16 @@ class AuthController {
         
         redirect(url: Google.getLoginUrl())
     }
+
     def facebook() {
         redirect(url: Facebook.getLoginUrl())
     }
+
     def flickr() {
         redirect(url: Flickr.getLoginUrl())
     }
-    def picasa() {
+
+    def photos() {
         redirect(url: Picasa.getLoginUrl())
     }
 
@@ -37,6 +40,13 @@ class AuthController {
         redirect(url: AmazonCloudDrive.getLoginUrl())
     }
 
+    def wikipedia() {
+        redirect(url:Wikipedia.getLoginUrl())
+    }
+    
+    def wikipediaLogin() {
+    }
+
     def googleCallback(String code) {
         if (code) {
             def accessInfo = Google.exchangeCode(code)
@@ -48,6 +58,7 @@ class AuthController {
         }
         redirect(uri: '/picker#Google')
     }
+
     def facebookCallback(String code) {
         if (code) {
            def accessInfo = Facebook.exchangeCode(code)
@@ -59,6 +70,7 @@ class AuthController {
         }
         redirect(uri: '/picker#Facebook')
     }
+
     def flickrCallback(String oauth_token, String oauth_verifier) {
         println params
         println 'flickrCallback'
@@ -74,16 +86,19 @@ class AuthController {
         redirect(uri: '/picker#Flickr')
     }
 
-    def picasaCallback(String code) {
+    def photosCallback(String code) {
+        println code
         if (code) {
             def accessInfo = Picasa.exchangeCode(code)
+            println accessInfo
             def emailId = Picasa.getEmailId(accessInfo.accessToken)
+            println emailId
             Access picasaAccess = authService.picasaLogin(emailId, accessInfo)
             if (picasaAccess) {
                 session.picasaAccessId = picasaAccess.id
             }
         }
-        redirect(uri: '/picker#Picasa')
+        redirect(uri: '/picker#Photos')
     }
 
     def dropboxCallback(String code) {
@@ -137,6 +152,18 @@ class AuthController {
         redirect(uri: '/picker#AmazonCloudDrive')
     }
 
+    def wikipediaCallback(String username, String password) {
+        if (username != null && password != null) {
+           def accessInfo = Wikipedia.exchangeCode(username, password)
+           def emailId = Wikipedia.getEmailId(accessInfo.accessToken)
+           Access wikipediaAccess = authService.wikipediaLogin(emailId, accessInfo)
+            if (wikipediaAccess) {
+                session.wikipediaAccessId = wikipediaAccess.id
+            }
+        }
+        redirect(uri: '/picker#Wikipedia')
+    }
+
     def logout(String app) {
         switch (app) {
             case "Google":
@@ -165,6 +192,10 @@ class AuthController {
                 session[AmazonCloudDriveAPIType.NODE.toString()] = null
                 session[AmazonCloudDriveAPIType.METADATA.toString()] = null
                 break
+            case "Wikipedia":
+                session.wikipediaAccessId = null
+                break
+
         }
         def resp = [success: true]
         render resp as JSON

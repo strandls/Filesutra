@@ -33,7 +33,7 @@ class Facebook {
     static def exchangeCode(String code) {
         def restClient = new RESTClient(API_URL)
         def resp = restClient.post(
-                path: '/v2.6/oauth/access_token',
+                path: '/v2.8/oauth/access_token',
                 body: [client_id   : CLIENT_ID, client_secret: CLIENT_SECRET,
                        redirect_uri: REDIRECT_URI, code: code],
                 requestContentType: URLENC)
@@ -46,7 +46,7 @@ class Facebook {
     static def getEmailId(String accessToken) {
         def restClient = new RESTClient(API_URL)
         restClient.headers.Authorization = "Bearer $accessToken"
-        def resp = restClient.get(path: "/v2.6/me", params : [fields: "id,name,email"])
+        def resp = restClient.get(path: "/v2.8/me", params : [fields: "id,name,email"])
         if(resp.data.email){
             return resp.data.email;
         }else {
@@ -59,10 +59,10 @@ class Facebook {
         def restClient = new RESTClient(API_URL)
         restClient.headers.Authorization = "Bearer $accessToken"
         if(folderId == "facebook"){
-             def resp = restClient.get(path: "/v2.6/me/albums")
+             def resp = restClient.get(path: "/v2.8/me/albums")
              return resp.data
         }else{
-            def resp = restClient.get(path: "/v2.6/$folderId/photos", params : [fields: "images,name",after: afterToken])
+            def resp = restClient.get(path: "/v2.8/$folderId/photos", params : [fields: "images,name,icon,picture",after: afterToken])
             return resp.data
         }
         
@@ -72,7 +72,7 @@ class Facebook {
     static def getFile(String fileId, String accessToken) {
         def restClient = new RESTClient(API_URL)
         restClient.headers.Authorization = "Bearer $accessToken"
-        def resp = restClient.get(path: "/v2.6/$fileId", params : [fields: "images"])
+        def resp = restClient.get(path: "/v2.8/$fileId", params : [fields: "images"])
         return resp.data
     }
 
@@ -91,7 +91,7 @@ class Facebook {
     static def refreshToken(String refreshToken) {
         def restClient = new RESTClient(API_URL)
         def resp = restClient.post(
-                path: '/v2.6/oauth/access_token',
+                path: '/v2.8/oauth/access_token',
                 body: [client_id   : CLIENT_ID, client_secret: CLIENT_SECRET,
                        refresh_token: refreshToken, grant_type: 'refresh_token'],
                 requestContentType: URLENC)

@@ -100,7 +100,7 @@ username:resp.data.auth.user.@username.text()
 //refreshToken: resp.data.refresh_token
 ]
          */
-        AuthInterface authInterface = flickr.getAuthInterface();
+        AuthInterface authInterface = getFlickrJ().getAuthInterface();
 
         //Token token = authInterface.getRequestToken(REDIRECT_URI);
         Token requestToken = authInterface.getAccessToken(new Token(oauth_token,tokenSecretsCache.get(oauth_token)), new Verifier(oauth_verifier));
@@ -119,8 +119,8 @@ username:resp.data.auth.user.@username.text()
     }
 
     static def listItems(String folderId, String after, Access access, Auth auth) {
-        PhotosetsInterface pi = flickr.getPhotosetsInterface();
-        PhotosInterface photoInt = flickr.getPhotosInterface();
+        PhotosetsInterface pi = getFlickrJ().getPhotosetsInterface();
+        PhotosInterface photoInt = getFlickrJ().getPhotosInterface();
         List allPhotos = [];
         List allPhotoSets =  [];
 
@@ -141,9 +141,9 @@ username:resp.data.auth.user.@username.text()
                 int notInSetPage = 1;
                 Collection notInASet = new ArrayList();
                 while (true) {
-                    Collection nis = photoInt.getNotInSet(50, notInSetPage);
+                    Collection nis = photoInt.getNotInSet(500, notInSetPage);
                     notInASet.addAll(nis);
-                    if (nis.size() < 50) {
+                    if (nis.size() < 500) {
                         break;
                     }
                     notInSetPage++;
@@ -264,7 +264,7 @@ username:resp.data.auth.user.@username.text()
 
    static File downloadFile(input, Access access) {
 
-        PhotosInterface photoInt = flickr.getPhotosInterface();
+        PhotosInterface photoInt = getFlickrJ().getPhotosInterface();
         Photo photo = photoInt.getPhoto(input.fileId);
 
         File file = new File(grailsApplication.config.fileOps.resources.rootDir+File.separator+photo.title+".jpg");

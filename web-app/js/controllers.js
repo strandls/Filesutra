@@ -17,6 +17,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 } else {
                     var oAuthWndow = window.open(redirectUrl, "Filesutra", "width=800, height=600, top=100, left=300");
                     var interval = window.setInterval(function() {
+                        console.log('sdfsdfdf');
                         if (oAuthWndow.location.href.indexOf('picker') != -1) {
                             oAuthWndow.close();
                             location.reload();
@@ -38,7 +39,6 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
             }
 
             $scope.isConnected = function(app) {
-                // console.log($scope.appSettings.connectedApps);
                 if ($scope.appSettings.connectedApps.indexOf(app) != -1) {
                     return true;
                 } else {
@@ -136,7 +136,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
 
             $scope.$on("$locationChangeSuccess", function (event, newUrl) {
                 $scope.gettingList(0);
-                //console.log($location.search('resType'));
+                console.log($location.search('resType'));
             });
 
             $scope.gettingList = function(code){
@@ -144,6 +144,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 var path = $location.path();
                 var chunks = path.split("/");
                 var app, folderId;
+                console.log(chunks);
                 if (chunks.length < 2) {
                     $scope.selectApp("Local");
                     return;
@@ -155,7 +156,8 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 if (chunks.length > 2) {
                     folderId = chunks[chunks.length - 1];
                 }
-
+                console.log($scope.app);
+console.log(folderId);
                 if($scope.app == "Facebook" || $scope.app == "Flickr"){
 
                     if(code==0){
@@ -174,16 +176,16 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 }
                                 $scope.items = [];
                                 $scope.afterTokenVal = items.afterval;
-                                if(items.listresponse.length < 25){
+                                if(items.itemResponse.length < 25){
                                     $scope.showButton = false;
 
                                 }else{
                                     $scope.showButton = true;
                                 }
-                                for(var i=0; i< items.listresponse.length;i++){
-                                    $scope.items.push(items.listresponse[i]);
+                                for(var i=0; i< items.itemResponse.length;i++){
+                                    $scope.items.push(items.itemResponse[i]);
                                 }
-                                //$scope.items.push(items.listresponse);
+                                //$scope.items.push(items.itemResponse);
                             });
                         }
                     }else{
@@ -199,14 +201,14 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                             }
                             console.log(items);
                             if(items!="error"){
-                                if(items.listresponse.length < 25){
+                                if(items.itemResponse.length < 25){
                                     $scope.showButton = false;
                                 }else{
                                     $scope.showButton = true;
                                     $scope.isDisabled = false;
                                 }
-                                for(var i=0; i< items.listresponse.length;i++){
-                                    $scope.items.push(items.listresponse[i]);
+                                for(var i=0; i< items.itemResponse.length;i++){
+                                    $scope.items.push(items.itemResponse[i]);
                                 }
                             }else{
                                 $scope.showButton = false;
@@ -214,22 +216,38 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                         });
                     }
                 } else {
+                    console.log('else');
                     $scope.showButton = false;
                     if ($scope.isConnected(app)) {
+                        console.log('isConnected');
                         $scope.userGroupId = [];
                         $scope.itemId = [];
                         delete $scope.items;
-                        $scope.items = null
-                            fileService.getListItems(app, folderId, function (items) {
-                                if (chunks.length > 2) {
-                                    $scope.showBackButton = true;
-                                }else{
-                                    $scope.showBackButton = false;
-                                }
-                                $scope.items = items;
-                            });
+                        $scope.items = null;
+                        fileService.getListItems(app, folderId, function (items) {
+                            console.log(items);
+                            if (chunks.length > 2) {
+                                $scope.showBackButton = true;
+                            }else{
+                                $scope.showBackButton = false;
+                            }
+                            $scope.items = items.itemResponse;
+                        });
                     }
                 }
 
+            }
+            $scope.wikiLogin = function(app) {
+                 $("#wikiLoginMsg").html("").hide();
+                 $("#wikiFormLogin").submit(function( event ) {
+                     var username = $('input#wikiUser').val();
+                     var password = $('input#wikiPassword').val();
+                     if(username && password) {
+                         return;
+                     } else {
+                        $("#wikiLoginMsg").html("Username and password cannot be empty").show();
+                        event.preventDefault();
+                     }
+                });
             }
         }]);

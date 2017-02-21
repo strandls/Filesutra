@@ -14,9 +14,9 @@ class Picasa {
 
     def static grailsApplication = Holders.getGrailsApplication()
 
-    private static final String CLIENT_ID     = grailsApplication.config.auth.picasa.CLIENT_ID
-    private static final String CLIENT_SECRET = grailsApplication.config.auth.picasa.CLIENT_SECRET
-    private static final String REDIRECT_URI = grailsApplication.config.auth.picasa.REDIRECT_URI
+    private static final String CLIENT_ID     = grailsApplication.config.auth.photos.CLIENT_ID
+    private static final String CLIENT_SECRET = grailsApplication.config.auth.photos.CLIENT_SECRET
+    private static final String REDIRECT_URI = grailsApplication.config.auth.photos.REDIRECT_URI
 
     private static final String AUTH_URL = "https://accounts.google.com/o/oauth2/auth"
     private static final String API_URL = "https://www.googleapis.com"
@@ -50,8 +50,7 @@ class Picasa {
     }
 
     static def getEmailId(String accessToken) {
-     
-        return "Picasa_User"
+        return accessToken
     }
 
     static def listItems(String folderId, String accessToken) {
@@ -76,11 +75,10 @@ class Picasa {
          restClient.headers.Authorization = "Bearer $accessToken"
          def resp = restClient.get(path: "/data/feed/api/user/default/photoid/$fileId",params:[alt:"json"])
          def json = new JsonBuilder(resp.data).toPrettyString()
+         println json;
          def value = JSON.parse(json)
         return value.feed.media$group.media$content[0].url;
     }
-
-    
 
     static URLConnection getDownloadUrlConnection(String fileId, String accessToken) {
         def file = getFile(fileId, accessToken)

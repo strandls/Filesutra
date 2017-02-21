@@ -8,10 +8,16 @@ filesutraServices.factory("fileService", ['$http', function($http) {
         endpoint += '?folderId='+folderId+'&'+'after='+after;
       }
       $http.get(endpoint).success(function(data) {
-        callback(data);
+          console.log(data);
+          if(data.success == true) {
+            callback(data);
+          } else {
+            alert(data.msg);
+            callback("error");
+          }
       }).error(function(err){
-        console.log('error');
-         callback("error");
+          console.log('error');
+          callback("error");
       });
     },
     getListItems: function(app, folderId, callback) {
@@ -20,7 +26,16 @@ filesutraServices.factory("fileService", ['$http', function($http) {
         endpoint += '?folderId='+folderId;
       }
       $http.get(endpoint).success(function(data) {
-        callback(data);
+          console.log(data);
+          if(data.success == true) {
+            callback(data);
+          } else {
+            alert(data.msg);
+            callback("error");
+          }
+      }).error(function(err){
+          console.log('error');
+          callback("error");
       });
     },
     import : function(app, item, callback) {

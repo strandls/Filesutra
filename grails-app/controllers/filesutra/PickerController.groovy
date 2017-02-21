@@ -16,7 +16,7 @@ class PickerController {
             connectedApps.push("Flickr")
         }
         if (session.picasaAccessId) {
-            connectedApps.push("Picasa")
+            connectedApps.push("Photos")
         }
         if (session.boxAccessId) {
             connectedApps.push("Box")
@@ -29,6 +29,9 @@ class PickerController {
         }
         if (session.amazonAccessId) {
             connectedApps.push("AmazonCloudDrive")
+        }
+        if (session.wikipediaAccessId) {
+            connectedApps.push("Wikipedia")
         }
         def appSettings = [
                 connectedApps : connectedApps
