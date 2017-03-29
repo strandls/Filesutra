@@ -14,6 +14,7 @@ class File {
     Date lastUpdated
 
     static constraints = {
+        name (nullable:false, size:1..500)
         dateCreated nullable: true
         lastUpdated nullable: true
         size        nullable: true

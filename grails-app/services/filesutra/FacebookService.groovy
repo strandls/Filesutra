@@ -23,4 +23,8 @@ class FacebookService {
             return Facebook.getDownloadUrlConnection(fileId, accessToken)
         }, access)
     }
+
+    java.io.File downloadFile(input, Access access) {
+       return Facebook.downloadFile(input, access); 
+    }
 }

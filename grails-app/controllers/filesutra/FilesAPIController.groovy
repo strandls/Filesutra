@@ -311,7 +311,9 @@ class FilesAPIController {
         def input = request.JSON
         println input
         Access access = Access.get(session.facebookAccessId)
-        File file = new File(fileId: input.fileId, type: "FACEBOOK", access: access,
+        java.io.File file = facebookService.downloadFile(input, access);
+        log.debug "Downloaded file absolute path ${file.getAbsolutePath()}"
+/*        File file = new File(fileId: input.fileId, type: "FACEBOOK", access: access,
         name: input.fileName, size: input.size)
         file.localFileId = Utils.randomString(15)
         file.save(flush: true, failOnError: true)
@@ -323,6 +325,14 @@ class FilesAPIController {
         size: file.size,
         mimetype: input.mimetype
         ]
+        render fileResponse as JSON
+*/
+
+        def fileResponse = [
+        originalFilename:file.name,
+        url:file.getAbsolutePath(),
+        size:file.length(),
+        contentType:input.mimetype]
         render fileResponse as JSON
     }
 

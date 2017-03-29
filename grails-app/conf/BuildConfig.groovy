@@ -35,6 +35,7 @@ grails.project.dependency.resolution = {
     repositories {
         inherits true // Whether to inherit repository definitions from plugins
 
+        mavenRepo   "https://mvnrepository.com/repos/central"
         grailsPlugins()
         grailsHome()
         mavenLocal()
@@ -44,6 +45,23 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
+        mavenRepo   "http://central.maven.org/maven2/"
+        mavenRepo "https://repo.grails.org/grails/plugins"
+        mavenRepo "http://download.java.net/maven/2/"
+        mavenRepo 'http://download.osgeo.org/webdav/geotools'
+        mavenRepo 'http://www.hibernatespatial.org/repository'
+        mavenRepo "http://repository.jboss.com/maven2/"
+        //mavenRepo "http://snapshots.repository.codehaus.org"
+        mavenRepo "https://repository.jboss.org/nexus/content/groups/public"
+        mavenRepo "http://mvnrepository.com/artifact/"
+        mavenRepo "http://repo.spring.io/milestone/"
+        mavenRepo "http://repo1.maven.org/maven2"
+
+        mavenRepo "http://repo.marketcetera.org/maven/"
+        mavenRepo "http://maven.restlet.org/"
+        //mavenRepo "http://localhost:8081/artifactory/plugins-releases-local/"
+        mavenRepo "https://repository.apache.org/content/repositories/releases/"
+
     }
 
     dependencies {
@@ -58,6 +76,8 @@ grails.project.dependency.resolution = {
         compile 'com.google.apis:google-api-services-drive:v3-rev57-1.22.0'
         compile 'com.aetrion.flickr:flickrapi:1.1'
         compile 'com.flickr4java:flickr4java:2.16'
+        compile "org.springframework.social:spring-social-facebook:2.0.3.RELEASE"
+        compile 'org.apache.httpcomponents:httpclient:4.3.2'
     }
 
     plugins {

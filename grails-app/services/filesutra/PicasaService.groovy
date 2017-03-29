@@ -8,10 +8,12 @@ class PicasaService {
 
     def callAPI(Closure c, Access access) {
         def accessInfo = JSON.parse(access.accessInfo)
-           try {
+        try {
             c(accessInfo.accessToken)
         } catch (e) {
+            e.printStackTrace();
             if (e.hasProperty("response") && e.response?.status == 401) {
+                println "REFRESH TOKEN SERVICE"
                 accessInfo.accessToken = Google.refreshToken(accessInfo.refreshToken)
                 access.accessInfo = Utils.jsonToString(accessInfo)
                 access.save(flush: true, failOnError: true)
@@ -20,7 +22,6 @@ class PicasaService {
                throw e
             }
         }
-       
     }
 
     def listItems(String folderId, Access access) {

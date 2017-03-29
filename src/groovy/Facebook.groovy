@@ -2,8 +2,11 @@ package filesutra
 
 import grails.util.Holders
 import groovyx.net.http.RESTClient
-
+import java.io.File;
 import static groovyx.net.http.ContentType.URLENC
+import org.springframework.social.facebook.api.Facebook as FB;
+import org.springframework.social.facebook.api.impl.FacebookTemplate;
+import grails.converters.JSON
 
 /**
  * Created by karthik on 10/05/16.
@@ -87,7 +90,6 @@ class Facebook {
         return connection
     }
 
-
     static def refreshToken(String refreshToken) {
         def restClient = new RESTClient(API_URL)
         def resp = restClient.post(
@@ -97,4 +99,24 @@ class Facebook {
                 requestContentType: URLENC)
         return resp.data.access_token
     }
+
+    static File downloadFile(input, Access access) {
+        println input
+        println access
+        File file = new File(grailsApplication.config.fileOps.resources.rootDir+File.separator+input.fileName);
+        //OutputStream out = new FileOutputStream(file);
+        try {
+        def accessInfo = JSON.parse(access.accessInfo)
+        def facebook = new FacebookTemplate(accessInfo.accessToken, "Filesutra");
+        byte[] image = facebook.mediaOperations().getPhotoImage(input.fileId)
+        file.setBytes(image);
+        println file
+        } catch(Exception e) {
+            e.printStackTrace(); 
+            return null;
+        } 
+        return file
+   }
+
+
 }

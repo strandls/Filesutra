@@ -90,6 +90,7 @@ class Picasa {
     }
 
     static def refreshToken(String refreshToken) {
+        println "REFRESH TOKENNNNNNNNNNN"
         def restClient = new RESTClient(API_URL)
         def resp = restClient.post(
                 path: '/oauth2/v3/token',
