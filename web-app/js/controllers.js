@@ -72,6 +72,36 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                             console.log(thrownError);
                         }
                     });
+            }
+
+            $scope.uploadVideoFile = function(event){
+                var me1 = $('#submitVideo')
+                    me1.ajaxSubmit({
+                        url : "/demo/uploadVideo",
+                        dataType : "json",
+
+                        success : function (response, statusText, xhr, form) {
+                            var images = response.videos;
+                            console.log(images);
+                            //console.log(typeof(images))
+                            //console.log(images)
+                            var message = {
+                                type  : 'filesutra',
+                                contentType : 'videoUrl',
+                                data   :  images
+                            }
+                            if (window.opener) {
+                                window.opener.postMessage(message, '*');
+                                window.close();
+                            } else {
+                                // iframe
+                                parent.postMessage(message, '*');
+                            }
+                        },
+                        error : function(xhr, ajaxOptions, thrownError){
+                            console.log(thrownError);
+                        }
+                    });
             };
 
 

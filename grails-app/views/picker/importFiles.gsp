@@ -23,14 +23,17 @@
   <!--script src="http://filesutra.com/js/filesutra.js"></script-->
 
   <style>
+  .container {
+    width:98%;
+  }
     li a {
       cursor: pointer;
     }
     .filesPane {
-      min-height: 400px;
+/*      min-height: 400px;
       max-height: 400px;
       overflow: auto;
-    }
+*/    }
     .selectedItem {
       background-color: #46b8da;
     }
@@ -73,7 +76,7 @@
 <div class="container submitObs" style="padding: 10px">
   <div class="row" ng-controller="AppCtrl" ng-init="init(${appSettings})">
   <br/>
-    <div class="col-md-3 col-sm-3">
+    <div class="col-md-3 col-sm-3" style="padding-right:0px;">
     <ul class="list-group">
     <li class="list-group-item" ng-click="selectApp('Local')">
     <a >My Computer</a>
@@ -104,6 +107,10 @@
     <a>Wikimedia</a>
     <a ng-if="isConnected('Wikimedia')" ng-click="logout('Wikimedia')" class="pull-right">logout</a>
     </li>
+    <li class="list-group-item" ng-click="selectApp('Youtube')">
+    <a >Youtube</a>
+    </li>
+ 
     <!--li class="list-group-item">
           <a ng-click="selectApp('Box')">Box</a>
           <a ng-if="isConnected('Box')" ng-click="logout('Box')" class="pull-right">logout</a>
@@ -119,19 +126,35 @@
               </ul>
     </div>
     <div class="col-md-9 col-sm-9">
-    <a class="btn btn-primary pull-left glyphicon glyphicon-chevron-left" ng-if="showBackButton" ng-click="backButton()"></a>
+    <a class="btn btn-primary pull-right glyphicon glyphicon-chevron-left" ng-if="showBackButton" ng-click="backButton()" style=""></a>
     <div class="row filesPane">
         <div>
           <div ng-if="app!=undefined ">
-            <div ng-if="!isConnected(app) && runningApp !='Local'" style="text-align: center; margin-top: 40px">
+            <div ng-if="!isConnected(app) && runningApp !='Local' && runningApp !='Youtube'" style="text-align: center; margin-top: 40px">
               <a class="btn btn-primary" ng-click="login(app)">
                 Connect {{app=='AmazonCloudDrive'? 'Amazon Cloud Drive' : app}}</a>
             </div>
              <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center; margin-top: 40px">
               <form id="submitIt" class="upload_resource1" method="post"  enctype="multipart/form-data" style="text-align: -moz-center;">                
-                <input type="file" class="fileUploadInput btn btn-primary" style="display: -webkit-inline-box;" name="resources" id="fileUploadInput" custom-on-change="uploadFile" accept="image/*" title="Choose File" multiple/> 
+                <input type="file" class="fileUploadInput btn btn-primary" style="display: -webkit-inline-box;" name="resources" id="fileUploadInput" custom-on-change="uploadFile" accept="image/*|audio/*" title="Choose File" multiple/> 
               </form>                
             </div>
+             <div ng-if="!isConnected(app) && runningApp =='Youtube'" style="text-align: center; margin-top: 40px">
+              <form id="submitVideo" class="form-horizontal upload_resource2" method="post" style="text-align: -moz-center;">                
+              <div class="form-group">
+              <label  class="col-sm-3 control-label">Enter YouTube watch url like http://www.youtube.com/watch?v=v8HVWDrGr6o</label>
+              <div class="col-sm-9">
+              <input type="text" class="fileUploadInput form-control" name="videoResources" id="videoFileUploadInput" custom-on-change="uploadVideoFile" title="Please enter youtube video url" placeholder="Add Video">
+              </div>
+              </div>
+              <div class="form-group">
+              <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default">Submit</button>
+              </div>
+              </div>
+              </form>                
+            </div>
+
 
             <div ng-if="isConnected(app)">
               <div ng-if="!items" style="text-align: center;">

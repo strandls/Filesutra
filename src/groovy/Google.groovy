@@ -96,14 +96,17 @@ class Google {
         .setClientSecret(CLIENT_SECRET)
         .setAuthUri(AUTH_URL)
         .setRedirectUris([REDIRECT_URI])
-        .setTokenUri(API_URL+'/oauth2/v4/token'));
+        .setTokenUri(API_URL+'/oauth2/v3/token'));
 
         TokenResponse tokenResponse = new TokenResponse();
         tokenResponse.setAccessToken(accessInfo.accessToken)
         .setRefreshToken(accessInfo.refreshToken);
 
         GoogleCredential credential = createCredentialWithRefreshToken(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, tokenResponse)
-
+println credential.getAccessToken();
+println credential.getRefreshToken();
+println credential.getExpiresInSeconds();
+credential.executeRefreshToken();
         //Credential credential = new AuthorizationCodeInstalledApp(
         //    flow, new LocalServerReceiver()).authorize("user");
 
@@ -112,7 +115,8 @@ class Google {
 
     public static GoogleCredential createCredentialWithRefreshToken(HttpTransport transport,
     JsonFactory jsonFactory, GoogleClientSecrets clientSecrets, TokenResponse tokenResponse) {
-        return new GoogleCredential.Builder().setTransport(transport)
+        return new GoogleCredential.Builder()
+        .setTransport(transport)
         .setJsonFactory(jsonFactory)
         .setClientSecrets(clientSecrets)
         .addRefreshListener(new CredentialRefreshListener() {
@@ -127,7 +131,8 @@ class Google {
             }
         })
         .build()
-        .setFromTokenResponse(tokenResponse);
+        .setFromTokenResponse(tokenResponse)
+        //.createScoped(["email","https://www.googleapis.com/auth/drive"]);
     }
 
     /**
@@ -177,27 +182,23 @@ class Google {
         return resp.data.emails[0].value
     }
 
-    static def listItems(String folderId, String accessToken) {
+    /*static def listItems(String folderId, String accessToken) {
         def restClient = new RESTClient(API_URL)
         restClient.headers.Authorization = "Bearer $accessToken"
         def resp = restClient.get(path: "/drive/v2/files", params : [q: "'$folderId' in parents and trashed=false"])
         return resp.data.items
-    }
+    }*/
 
     static def listItems(String folderId, Access access) {
-        try {
-            // Build a new authorized API client service.
-            Drive service = Google.getDriveService(access);
+        // Build a new authorized API client service.
+        Drive service = Google.getDriveService(access);
 
-            // Print the names and IDs for up to 10 files.
-            FileList result = service.files().list()
-            .setQ("'$folderId' in parents and trashed=false")
-            .setFields("nextPageToken, files(id,name,size,mimeType,thumbnailLink,webContentLink)")
-            .execute();
-            return result.getFiles();
-        } catch(Exception e) {
-            e.printStackTrace(); 
-        }
+        // Print the names and IDs for up to 10 files.
+        FileList result = service.files().list()
+        .setQ("'$folderId' in parents and trashed=false")
+        .setFields("nextPageToken, files(id,name,size,mimeType,thumbnailLink,webContentLink)")
+        .execute();
+        return result.getFiles();
     }
 
     static def getFile(String fileId, String accessToken) {

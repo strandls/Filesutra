@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.io.File;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 
 @Transactional
 class GoogleService {
@@ -42,11 +43,9 @@ class GoogleService {
         println "Google call API ${access}"
         try {
             c(accessInfo.accessToken)
-        } catch (e) {
+        } catch (GoogleJsonResponseException e) {
             log.error e;
-            println e.hasProperty("response")
-            println e.response?.status == 401
-            if (e.hasProperty("response") && e.response?.status == 401) {
+            if (e.getStatusCode() == 401) {
                 log.debug "Calling refresh token"
                 accessInfo.accessToken = Google.refreshToken(accessInfo.refreshToken)
                 access.accessInfo = Utils.jsonToString(accessInfo)
@@ -61,7 +60,10 @@ class GoogleService {
     }
 
     def listItems(String folderId, Access access) {
-         return Google.listItems(folderId, access)
+//        callAPI({ 
+            return Google.listItems(folderId, access)
+//        }, access)
+
    }
 
     def getDownloadUrlConnection(String fileId, Access access) {

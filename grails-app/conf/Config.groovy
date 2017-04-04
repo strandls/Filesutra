@@ -159,6 +159,7 @@ log4j.main = {
     debug   'com.google.api.client.auth.oauth2'
     debug   'com.google.api.client.auth.oauth2.*'
     debug   'com.google.api.client.auth.oauth2.Credential'
+    debug   'com.google.api.client.googleapis.auth.oauth2.GoogleCredential'
 
 }
 

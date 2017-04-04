@@ -43,6 +43,14 @@ class DemoController {
         render resourcesInfo as JSON 
 
     }    
+
+    def uploadVideo(){
+        def resourcesInfo = ['videos':[]];
+        if(params.videoResources) {
+            resourcesInfo.videos << params.videoResources
+        }
+        render resourcesInfo as JSON 
+    }
 }
 
 

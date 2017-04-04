@@ -58,7 +58,20 @@ class FilesAPIController {
                                                mItem.size = it.size
                                                mItem.mimetype = it.mimeType
                                                itemResponse.push(mItem)
-                                               }else if(it.mimeType == "application/vnd.google-apps.folder" && folderId != "untitled"){
+                                               }
+                                               else if(it.mimeType =~ /audio\/*/) {
+                                               def mItem = new ApiResponse.Item()
+                                               mItem.id = it.id
+                                               mItem.type = "file"
+                                               mItem.name = it.name
+                                               //mItem.thumbnail =it.thumbnailLink
+                                               mItem.iconurl =it.webContentLink
+                                               mItem.size = it.size
+                                               mItem.mimetype = it.mimeType
+                                               itemResponse.push(mItem)
+                                               }
+                                               
+                                               else if(it.mimeType == "application/vnd.google-apps.folder" && folderId != "untitled"){
                                                def mItem = new ApiResponse.Item()
                                                mItem.id = it.id
                                                mItem.type = "folder"
