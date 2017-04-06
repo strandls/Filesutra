@@ -90,39 +90,39 @@ class FilesAPIController {
     }
 
     def facebookFiles(String folderId, String after) {
-    try {
-    def typeSize;
-    folderId = folderId ? folderId : "facebook"
-    def items =  facebookService.listItems(folderId, after, Access.get(session.facebookAccessId))
-    def itemResponse = []
-    items.data.each {
-    def mItem = new ApiResponse.Item();
-    mItem.id = it.id
-    if(folderId == "facebook"){
-    mItem.type = "folder"
-    mItem.name = it.name
-    }else{
-    mItem.type = "file"
-    if(it.name){
-    mItem.name = it.name
-    }else{
-    mItem.name = it.id
-    }
-    mItem.iconurl = it.picture
-    typeSize = getMimeType(mItem.iconurl)
-    mItem.mimetype = typeSize[0]
-    mItem.size = typeSize[1]
-    }
-    itemResponse.push(mItem)
-    }
-    render(contentType: 'text/json') {
-    [success : true, itemResponse:itemResponse,afterval:items.paging.cursors.after]
-    }
-    return;
-    } catch(Exception e) {
+        try {
+            def typeSize;
+            folderId = folderId ? folderId : "facebook";
+            def items =  facebookService.listItems(folderId, after, Access.get(session.facebookAccessId));
+            def itemResponse = [];
+            items.data.each {
+                def mItem = new ApiResponse.Item();
+                mItem.id = it.id;
+                if(folderId == "facebook") {
+                    mItem.type = "folder";
+                    mItem.name = it.name;
+                } else {
+                    mItem.type = "file";
+                    if(it.name) {
+                        mItem.name = it.name;
+                    } else {
+                        mItem.name = it.id;
+                    }
+                    mItem.iconurl = it.picture;
+                    typeSize = getMimeType(mItem.iconurl);
+                    mItem.mimetype = typeSize[0];
+                    mItem.size = typeSize[1];
+                }
+                itemResponse.push(mItem);
+            }
+            render(contentType: 'text/json') {
+                [success : true, itemResponse:itemResponse,afterval:items.paging.cursors.after];
+            }
+            return;
+        } catch(Exception e) {
             e.printStackTrace();
-    render ([success:false, msg:e.getMessage()] as JSON);
-    }
+            render ([success:false, msg:e.getMessage()] as JSON);
+        }
     }
 
     def flickrFiles(String folderId, String after) {

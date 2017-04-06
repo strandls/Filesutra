@@ -130,7 +130,9 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 $scope.selectedItem = item;
             }
 
-            $scope.import = function() {
+            $scope.import = function(e) {
+                console.log($(e));
+                $(e.currentTarget).addClass('active');
                 var uploadCount = 0;
                 var importedFiles = [];
                 for(var i=0;i<$scope.userGroupId.length;i++){
@@ -151,6 +153,11 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 // iframe
                                 parent.postMessage(message, '*');
                             }
+                            $(e.currentTarget).removeClass('active');
+                            $('.selectedItem').removeClass('selectedClass');
+                            $scope.selectedItem = undefined;
+                            $scope.itemId.length = 0;
+                            $scope.userGroupId.length = 0;
                         }
                     });
                 }
@@ -159,12 +166,19 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
 
             $scope.init = function(appSettings){
                 $scope.appSettings = appSettings;
+                $.ajaxSetup({cache:false});
+                $(document).bind("ajaxStart", function(){
+                    $('body').addClass('busy');
+                }).bind("ajaxStop", function(){
+                    $('body').removeClass('busy');
+                });
             }
             $scope.backButton = function(){
                 window.history.back();
             }
 
             $scope.$on("$locationChangeSuccess", function (event, newUrl) {
+                console.log(event);
                 $scope.gettingList(0);
                 console.log($location.search('resType'));
             });

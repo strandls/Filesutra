@@ -7,6 +7,7 @@ import static groovyx.net.http.ContentType.URLENC
 import org.springframework.social.facebook.api.Facebook as FB;
 import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import grails.converters.JSON
+import org.springframework.social.facebook.api.ImageType;
 
 /**
  * Created by karthik on 10/05/16.
@@ -64,12 +65,10 @@ class Facebook {
         if(folderId == "facebook"){
              def resp = restClient.get(path: "/v2.8/me/albums")
              return resp.data
-        }else{
-            def resp = restClient.get(path: "/v2.8/$folderId/photos", params : [fields: "images,name,icon,picture",after: afterToken])
+        } else {
+            def resp = restClient.get(path: "/v2.8/$folderId/photos", params : [fields: "name,icon,picture",after: afterToken])
             return resp.data
         }
-        
-        
     }
 
     static def getFile(String fileId, String accessToken) {
@@ -108,9 +107,9 @@ class Facebook {
         try {
         def accessInfo = JSON.parse(access.accessInfo)
         def facebook = new FacebookTemplate(accessInfo.accessToken, "Filesutra");
-        byte[] image = facebook.mediaOperations().getPhotoImage(input.fileId)
+        byte[] image = facebook.mediaOperations().getPhotoImage(input.fileId,ImageType.NORMAL);
         file.setBytes(image);
-        println file
+        println file.getAbsolutePath();
         } catch(Exception e) {
             e.printStackTrace(); 
             return null;
