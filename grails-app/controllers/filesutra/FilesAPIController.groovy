@@ -33,7 +33,8 @@ class FilesAPIController {
             if(folderId == "root"){
                 itemResponse.push(["id":"untitled","type":"folder","name":"Not in folder"])
             }
-            items.each {
+            println items
+            items.files.each {
                 println it;
                 if(folderId == "root"){
                     println "-------------------------------------ROOT"
@@ -49,36 +50,35 @@ class FilesAPIController {
                 } else {
                     println it.mimeType
                     if(it.mimeType =~ /image\/*/) {
-                                               def mItem = new ApiResponse.Item()
-                                               mItem.id = it.id
-                                               mItem.type = "file"
-                                               mItem.name = it.name
-                                               mItem.thumbnail =it.thumbnailLink
-                                               mItem.iconurl =it.webContentLink
-                                               mItem.size = it.size
-                                               mItem.mimetype = it.mimeType
-                                               itemResponse.push(mItem)
-                                               }
-                                               else if(it.mimeType =~ /audio\/*/) {
-                                               def mItem = new ApiResponse.Item()
-                                               mItem.id = it.id
-                                               mItem.type = "file"
-                                               mItem.name = it.name
-                                               //mItem.thumbnail =it.thumbnailLink
-                                               mItem.iconurl =it.webContentLink
-                                               mItem.size = it.size
-                                               mItem.mimetype = it.mimeType
-                                               itemResponse.push(mItem)
-                                               }
-                                               
-                                               else if(it.mimeType == "application/vnd.google-apps.folder" && folderId != "untitled"){
-                                               def mItem = new ApiResponse.Item()
-                                               mItem.id = it.id
-                                               mItem.type = "folder"
-                                               mItem.name = it.name
-                                               mItem.size = it.size
-                                               itemResponse.push(mItem)
-                                               }
+                        def mItem = new ApiResponse.Item()
+                        mItem.id = it.id
+                        mItem.type = "file"
+                        mItem.name = it.name
+                        mItem.thumbnail =it.thumbnailLink
+                        mItem.iconurl =it.webContentLink
+                        mItem.size = it.size
+                        mItem.mimetype = it.mimeType
+                        itemResponse.push(mItem)
+                    } else if(it.mimeType =~ /audio\/*/) {
+                        def mItem = new ApiResponse.Item()
+                        mItem.id = it.id
+                        mItem.type = "file"
+                        mItem.name = it.name
+                        //mItem.thumbnail =it.thumbnailLink
+                        mItem.iconurl =it.webContentLink
+                        mItem.size = it.size
+                        mItem.mimetype = it.mimeType
+                        itemResponse.push(mItem)
+                        }
+                        
+                        else if(it.mimeType == "application/vnd.google-apps.folder" && folderId != "untitled"){
+                        def mItem = new ApiResponse.Item()
+                        mItem.id = it.id
+                        mItem.type = "folder"
+                        mItem.name = it.name
+                        mItem.size = it.size
+                        itemResponse.push(mItem)
+                    }
                 }
             }
             render ([success:true, itemResponse:itemResponse, 'afterval':items.nextPageToken] as JSON)

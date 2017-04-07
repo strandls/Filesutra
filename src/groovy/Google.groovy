@@ -214,7 +214,7 @@ credential.executeRefreshToken();
         result = files.execute();
         f.addAll(result.getFiles());
 
-        return f;
+        return ['files':f,'nextPageToken':files.getPageToken()];
     }
 
     static def getFile(String fileId, String accessToken) {
