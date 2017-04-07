@@ -12,9 +12,9 @@ class PicasaService {
             c(accessInfo.accessToken)
         } catch (e) {
             e.printStackTrace();
-            if (e.hasProperty("response") && e.response?.status == 401) {
+            if (e.hasProperty("response") && e.response?.status == 403) {
                 println "REFRESH TOKEN SERVICE"
-                accessInfo.accessToken = Google.refreshToken(accessInfo.refreshToken)
+                accessInfo.accessToken = Picasa.refreshToken(accessInfo.refreshToken)
                 access.accessInfo = Utils.jsonToString(accessInfo)
                 access.save(flush: true, failOnError: true)
                 c(accessInfo.accessToken)
@@ -24,9 +24,9 @@ class PicasaService {
         }
     }
 
-    def listItems(String folderId, Access access) {
+    def listItems(String folderId, String afterVal, Access access) {
         callAPI({ accessToken->
-            return Picasa.listItems(folderId, accessToken)
+            return Picasa.listItems(folderId, afterVal, accessToken)
         }, access)
     }
 

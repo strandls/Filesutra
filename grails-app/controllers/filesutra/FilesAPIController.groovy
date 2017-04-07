@@ -20,14 +20,14 @@ class FilesAPIController {
 
 
 
-    def googleFiles(String folderId) {
+    def googleFiles(String folderId, String after) {
         try {
             folderId = folderId ? folderId : "root"
             def items;
             if(folderId == "untitled"){
-                items =  googleService.listItems("root", Access.get(session.googleAccessId))
+                items =  googleService.listItems("root", after, Access.get(session.googleAccessId))
             }else{
-                items =  googleService.listItems(folderId, Access.get(session.googleAccessId))
+                items =  googleService.listItems(folderId, after, Access.get(session.googleAccessId))
             }
             def itemResponse = []
             if(folderId == "root"){
@@ -81,7 +81,7 @@ class FilesAPIController {
                                                }
                 }
             }
-            render ([success:true, itemResponse:itemResponse] as JSON)
+            render ([success:true, itemResponse:itemResponse, 'afterval':items.nextPageToken] as JSON)
             return;
             } catch(Exception e) {
             e.printStackTrace();
@@ -172,10 +172,10 @@ class FilesAPIController {
 
     }
 
-    def picasaFiles(String folderId) {
+    def picasaFiles(String folderId, String after) {
         folderId = folderId ? folderId : "picasa"
         try {
-            def items =  picasaService.listItems(folderId, Access.get(session.picasaAccessId))
+            def items =  picasaService.listItems(folderId, after, Access.get(session.picasaAccessId))
             def itemResponse = []
             items.each {
                 def mItem = new ApiResponse.Item();
@@ -186,13 +186,13 @@ class FilesAPIController {
                 }else{
                     mItem.type = "file"
                     mItem.name = it.title.$t
-                    mItem.iconurl = it.media$group.media$content[0].url
+                    mItem.iconurl = it.media$group.media$thumbnail[1].url
                     mItem.size = it.gphoto$size.$t ? it.gphoto$size.$t as long : null
                     mItem.mimetype = it.media$group.media$content[0].type
                 }
                 itemResponse.push(mItem)
             }
-            render ([success:true, itemResponse:itemResponse] as JSON)
+            render ([success:true, itemResponse:itemResponse, 'afterval':(after?Integer.parseInt(after):1)+25] as JSON)
             return;
         } catch(Exception e) {
             e.printStackTrace();

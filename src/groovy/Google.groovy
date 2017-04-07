@@ -189,16 +189,32 @@ credential.executeRefreshToken();
         return resp.data.items
     }*/
 
-    static def listItems(String folderId, Access access) {
+    static def listItems(String folderId, String afterVal, Access access) {
         // Build a new authorized API client service.
         Drive service = Google.getDriveService(access);
 
         // Print the names and IDs for up to 10 files.
-        FileList result = service.files().list()
+        FileList result;
+        def folders = service.files().list()
+        .setQ("'$folderId' in parents and trashed=false and mimeType = 'application/vnd.google-apps.folder'")
+        .setFields("nextPageToken, files(id,name,size,mimeType,thumbnailLink,webContentLink)")
+
+
+        def files = service.files().list()
         .setQ("'$folderId' in parents and trashed=false")
         .setFields("nextPageToken, files(id,name,size,mimeType,thumbnailLink,webContentLink)")
-        .execute();
-        return result.getFiles();
+        .setPageSize(25);
+
+        if(afterVal)
+            files.setPageToken(afterVal);
+
+        def f = [];
+        result = folders.execute();
+        f.addAll(result.getFiles());
+        result = files.execute();
+        f.addAll(result.getFiles());
+
+        return f;
     }
 
     static def getFile(String fileId, String accessToken) {

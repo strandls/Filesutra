@@ -202,7 +202,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 }
                 console.log($scope.app);
 console.log(folderId);
-                if($scope.app == "Facebook" || $scope.app == "Flickr"){
+//                if($scope.app == "Facebook" || $scope.app == "Flickr"){
 
                     if(code==0){
                         $scope.showButton = false;
@@ -222,14 +222,13 @@ console.log(folderId);
                                 $scope.afterTokenVal = items.afterval;
                                 if(items.itemResponse.length < 25){
                                     $scope.showButton = false;
-
                                 }else{
                                     $scope.showButton = true;
                                 }
+                                console.log( $scope.showButton);
                                 for(var i=0; i< items.itemResponse.length;i++){
                                     $scope.items.push(items.itemResponse[i]);
                                 }
-                                //$scope.items.push(items.itemResponse);
                             });
                         }
                     }else{
@@ -259,7 +258,7 @@ console.log(folderId);
                             }
                         });
                     }
-                } else {
+               /* } else {
                     console.log('else');
                     $scope.showButton = false;
                     if ($scope.isConnected(app)) {
@@ -278,7 +277,7 @@ console.log(folderId);
                             $scope.items = items.itemResponse;
                         });
                     }
-                }
+                }*/
 
             }
             $scope.wikiLogin = function(app) {

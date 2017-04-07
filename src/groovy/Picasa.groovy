@@ -53,7 +53,7 @@ class Picasa {
         return accessToken
     }
 
-    static def listItems(String folderId, String accessToken) {
+    static def listItems(String folderId, String afterVal, String accessToken) {
           def restClient = new RESTClient(PIC_URL)
           restClient.headers.Authorization = "Bearer $accessToken"
             if(folderId == "picasa"){
@@ -62,8 +62,10 @@ class Picasa {
                 def value = JSON.parse(json)
                 return value.feed.entry;
             }else{
-                def pathVal = "/data/feed/api/user/default/albumid/"+folderId
-                def resp = restClient.get(path: pathVal,params:[alt:"json"])
+                def pathVal = "/data/feed/api/user/default/albumid/"+folderId;
+                println afterVal;
+                println "========================"
+                def resp = restClient.get(path: pathVal,params:[alt:"json",'start-index':(afterVal?:'1'),'max-results':25, 'fields':'entry(title,gphoto:id,gphoto:numphotos,gphoto:size,  media:group(media:content,media:thumbnail))']);
                 def json = new JsonBuilder(resp.data).toPrettyString()
                 def value = JSON.parse(json)
                 return value.feed.entry;

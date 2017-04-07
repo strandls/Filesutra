@@ -40,6 +40,7 @@
     }
     .filesutraItem {
       cursor: pointer;
+    margin:0px;
     }
     .filesutraItem a{
         height:50px;
@@ -118,9 +119,14 @@
 	width:auto;
 }
 .snippet.tablet .caption {
-	height:50px;
+	height:25px;
         padding:0px 0px;
         position:relative;
+         text-overflow: ellipsis;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+
 }
 .snippet.tablet .caption .story-footer {
         left:0px;
@@ -188,7 +194,7 @@ img.loading {
 
 <body>
 
-<div class="container submitObs" style="padding: 10px">
+<div class="container submitObs" style="padding: 10px;">
   <div class="row" ng-controller="AppCtrl" ng-init="init(${appSettings})">
     <div id="fileSource" class="col-md-3 col-sm-3" style="padding:0px;position:fixed;">
     <ul class="list-group">
@@ -239,7 +245,7 @@ img.loading {
         </li-->
               </ul>
     </div>
-    <div class="col-md-9 col-sm-9" style="margin-left:26%">
+    <div class="col-md-9 col-sm-9" style="margin-left:26%; width:73%;">
     <div class="row filesPane">
         <div>
           <div ng-if="app!=undefined ">
@@ -275,7 +281,7 @@ img.loading {
             <a class="btn btn-sm btn-primary pull-left glyphicon glyphicon-chevron-left" ng-if="showBackButton" ng-click="backButton()" style=""></a>
             <h4>{{app}}</h4>
             </div>
-            <div class="thumbnails clearfix">
+            <div class="thumbnails clearfix" style="height:227px;overflow-y:auto;">
               <div ng-if="!items" style="text-align: center;">
                 Loading...
               </div>
@@ -298,7 +304,7 @@ img.loading {
                           <img  ng-if="runningApp != 'Google'" src="{{item.iconurl}}" class="img-responsive img-polaroid loading"/>
                           <img  ng-if="runningApp == 'Google'" src="{{item.thumbnail}}" class="img-responsive img-polaroid loading"/>
                           </div>
-                        <div class="caption" style="height:50px;overflow:hidden;">
+                        <div class="caption">
                         {{item.name}}
                         </div>
                        </li>

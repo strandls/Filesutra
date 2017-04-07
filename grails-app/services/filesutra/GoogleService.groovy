@@ -59,9 +59,9 @@ class GoogleService {
         }
     }
 
-    def listItems(String folderId, Access access) {
+    def listItems(String folderId, String afterVal, Access access) {
 //        callAPI({ 
-            return Google.listItems(folderId, access)
+            return Google.listItems(folderId, afterVal, access)
 //        }, access)
 
    }
