@@ -48,12 +48,37 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
 
             $scope.uploadFile = function(event){
                 //$('#submitIt').submit();
-                var me1 = $('#submitIt')
-                    me1.ajaxSubmit({
+                var me1 = $('#submitIt');
+                var bar = $('.progress-bar');
+                var percent = $('.percent');
+                var status = $('#status');
+
+                me1.ajaxSubmit({
                         url : "/demo/upload",
-                        dataType : "jsonp",
+                        dataType : "json",
+                        beforeSend: function() {
+                            status.empty();
+                            var percentVal = '0%';
+                            bar.width(percentVal);
+                            percent.html(percentVal);
+                        },
+                        uploadProgress: function(event, position, total, percentComplete) {
+                            console.log(percentComplete);
+                            var percentVal = percentComplete + '%';
+                            bar.css("width", percentVal).text(percentVal);
+                        },
+                        complete: function(xhr) {
+                            var str = '<ul style="text-align:left;">';
+                            xhr.responseText = JSON.parse(xhr.responseText);
+                            for(var i=0; i<xhr.responseText.length; i++) {
+                                console.log(xhr.responseText[i]);
+                                str += "<li>"+xhr.responseText[i].originalFilename+" ("+xhr.responseText[i].contentType+" - "+xhr.responseText[i].size+")</li>";
+                            }
+                            str += "</ul>";
+                            status.html(str);
+                        },
                         success : function (response, statusText, xhr, form) {
-                            var images = JSON.parse(response);
+                            var images = response;
                             //console.log(typeof(images))
                             //console.log(images)
                             var message = {
@@ -132,7 +157,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
 
             $scope.import = function(e) {
                 console.log($(e));
-                $(e.currentTarget).addClass('active');
+                $(e.currentTarget).addClass('active').text('Importing');
                 var uploadCount = 0;
                 var importedFiles = [];
                 for(var i=0;i<$scope.userGroupId.length;i++){
@@ -153,7 +178,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 // iframe
                                 parent.postMessage(message, '*');
                             }
-                            $(e.currentTarget).removeClass('active');
+                            $(e.currentTarget).removeClass('active').text('Import');
                             $('.selectedItem').removeClass('selectedClass');
                             $scope.selectedItem = undefined;
                             $scope.itemId.length = 0;
@@ -167,10 +192,12 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
             $scope.init = function(appSettings){
                 $scope.appSettings = appSettings;
                 $.ajaxSetup({cache:false});
-                $(document).bind("ajaxStart", function(){
-                    $('body').addClass('busy');
-                }).bind("ajaxStop", function(){
-                    $('body').removeClass('busy');
+                $(document).on("ajaxStart", function(){
+                    console.log('ajaxStart----------------------------');
+                    $('.container').addClass('busy');
+                }).on("ajaxStop", function(){
+                    console.log('ajaxStop----------------------------');
+                    $('.container').removeClass('busy');
                 });
             }
             $scope.backButton = function(){

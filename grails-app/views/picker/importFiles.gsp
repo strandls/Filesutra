@@ -19,13 +19,14 @@
   <script src="/js/app.js"></script>
   <script src="/js/controllers.js"></script>
   <script src="/js/services.js"></script>
-  <script src="/js/jquery.form.js"></script>
+  <script src="/js/jquery.form.min.js"></script>
   <!--script src="http://filesutra.com/js/filesutra.js"></script-->
 
   <style>
   .container {
     width:100%;
-      overflow-x:hidden;
+    overflow-x:hidden;
+    height:349px;
   }
     li a {
       cursor: pointer;
@@ -73,7 +74,7 @@
     .import-btn {
       margin-right: 20px;
     }
-    body.busy, body.busy * {  
+    .busy, .busy * {  
     cursor: wait !important;  
     }
     .spinner {
@@ -255,8 +256,14 @@ img.loading {
             </div>
              <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center; margin-top: 40px">
               <form id="submitIt" class="upload_resource1" method="post"  enctype="multipart/form-data" style="text-align: -moz-center;">                
+
                 <input type="file" class="fileUploadInput btn btn-primary" style="display: -webkit-inline-box;" name="resources" id="fileUploadInput" custom-on-change="uploadFile" accept="image/*|audio/*" title="Choose File" multiple/> 
-              </form>                
+            </form>                
+            <div class="progress progress-striped active" style="margin-top:20px;">
+            <div class="progress-bar" style="min-width: 20px;">0%</div>
+            </div>
+
+                <div id="status"></div>
             </div>
              <div ng-if="!isConnected(app) && runningApp =='Youtube'" style="text-align: center; margin-top: 40px">
               <form id="submitVideo" class="form-horizontal upload_resource2" method="post" style="text-align: -moz-center;">                
@@ -309,7 +316,7 @@ img.loading {
                         </div>
                        </li>
                       </ul>
-                        <button id="singlebutton" name="singlebutton" ng-disabled="isDisabled" style="margin:0 auto;display:block;" class="btn btn-primary bottom2" ng-show="$last && showButton" ng-click="gettingList(1)">{{loadMoreText}}</button> 
+                        <button id="singlebutton" name="singlebutton" ng-disabled="isDisabled" style="margin:0 auto;display:block;width:100%;" class="btn btn-primary bottom2" ng-show="$last && showButton" ng-click="gettingList(1)">{{loadMoreText}}</button> 
                   </div>
                   </div>
          
