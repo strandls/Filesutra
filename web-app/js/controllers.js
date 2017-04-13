@@ -45,6 +45,25 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                     return false;
                 }
             }
+            $scope.setProgress = function(percentVal){
+                //$('#submitIt').submit();
+                var me1 = $('#submitIt');
+                var bar = $('.progress-bar');
+                var percent = $('.percent');
+                var status = $('#status');
+                bar.width(percentVal);
+                percent.html(percentVal);
+                bar.css("width", percentVal).text(percentVal);
+
+            }
+
+            $scope.uploadFileSelect = function(event){
+                $('#importBtn').prop('disabled', false);
+                $('#importBtn').removeAttr('disabled');
+
+                $scope.filesSelected = true;
+                return false;
+            }
 
             $scope.uploadFile = function(event){
                 //$('#submitIt').submit();
@@ -53,19 +72,18 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 var percent = $('.percent');
                 var status = $('#status');
 
+                $scope.filesSelected = false;
+
                 me1.ajaxSubmit({
                         url : "/demo/upload",
                         dataType : "json",
                         beforeSend: function() {
-                            status.empty();
-                            var percentVal = '0%';
-                            bar.width(percentVal);
-                            percent.html(percentVal);
+                            $('#status').empty();
+                            $scope.setProgress('0%');
                         },
                         uploadProgress: function(event, position, total, percentComplete) {
-                            console.log(percentComplete);
                             var percentVal = percentComplete + '%';
-                            bar.css("width", percentVal).text(percentVal);
+                            $scope.setProgress(percentVal);
                         },
                         complete: function(xhr) {
                             var str = '<ul style="text-align:left;">';
@@ -92,6 +110,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 // iframe
                                 parent.postMessage(message, '*');
                             }
+                            $(e.currentTarget).removeClass('active').text('Import');
                         },
                         error : function(xhr, ajaxOptions, thrownError){
                             console.log(thrownError);
@@ -131,6 +150,9 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
 
 
             $scope.selectItem = function (item) {
+                $('#status').empty();
+                $scope.setProgress('0%');
+
                 if (item.type == "folder") {
                     $location.path($location.path()+'/'+item.id);
                 }else{
@@ -150,6 +172,14 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                         $scope.userGroupId.push(item);
                         console.log($scope.itemId);
                     }
+
+                    if($scope.itemId.length > 0) {
+                        $('#importBtn').prop('disabled', false);
+                        $('#importBtn').removeAttr('disabled');
+                    } else {
+                        $('#importBtn').prop('disabled', 'disabled');
+                        $('#importBtn').attr('disabled', 'disabled');
+                    }
                 }
 
                 $scope.selectedItem = item;
@@ -158,8 +188,15 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
             $scope.import = function(e) {
                 console.log($(e));
                 $(e.currentTarget).addClass('active').text('Importing');
+                if($scope.app == 'Local') {
+                    $scope.uploadFile(e);
+                    return;
+                }
+
                 var uploadCount = 0;
                 var importedFiles = [];
+                $('#status').empty();
+                $scope.setProgress('0%');
                 for(var i=0;i<$scope.userGroupId.length;i++){
                     fileService.import($scope.app, $scope.userGroupId[i], function(data) {
                         //console.log(data);
@@ -178,11 +215,16 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 // iframe
                                 parent.postMessage(message, '*');
                             }
+                            var percentVal = ((uploadCount/$scope.userGroupId.length)*100);
+                            $scope.setProgress(percentVal+'%');
                             $(e.currentTarget).removeClass('active').text('Import');
                             $('.selectedItem').removeClass('selectedClass');
                             $scope.selectedItem = undefined;
                             $scope.itemId.length = 0;
                             $scope.userGroupId.length = 0;
+                        } else {
+                            var percentVal = ((uploadCount/$scope.userGroupId.length)*100);
+                            $scope.setProgress(percentVal+'%');
                         }
                     });
                 }
@@ -199,6 +241,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                     console.log('ajaxStop----------------------------');
                     $('.container').removeClass('busy');
                 });
+                $scope.filesSelected = false;
             }
             $scope.backButton = function(){
                 window.history.back();
@@ -207,6 +250,11 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
             $scope.$on("$locationChangeSuccess", function (event, newUrl) {
                 console.log(event);
                 $scope.gettingList(0);
+                $scope.setProgress('0%');
+                $('#status').empty();
+                $scope.filesSelected = false;
+                $('#importBtn').prop('disabled', 'disabled');
+                $('#importBtn').attr('disabled', 'disabled');
                 console.log($location.search('resType'));
             });
 
@@ -228,7 +276,6 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                     folderId = chunks[chunks.length - 1];
                 }
                 console.log($scope.app);
-console.log(folderId);
 //                if($scope.app == "Facebook" || $scope.app == "Flickr"){
 
                     if(code==0){

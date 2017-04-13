@@ -26,7 +26,7 @@
   .container {
     width:100%;
     overflow-x:hidden;
-    height:349px;
+    height:329px;
   }
     li a {
       cursor: pointer;
@@ -195,7 +195,7 @@ img.loading {
 
 <body>
 
-<div class="container submitObs" style="padding: 10px;">
+<div class="container submitObs" style="padding: 0px 10px;">
   <div class="row" ng-controller="AppCtrl" ng-init="init(${appSettings})">
     <div id="fileSource" class="col-md-3 col-sm-3" style="padding:0px;position:fixed;">
     <ul class="list-group">
@@ -250,22 +250,26 @@ img.loading {
     <div class="row filesPane">
         <div>
           <div ng-if="app!=undefined ">
-            <div ng-if="!isConnected(app) && runningApp !='Local' && runningApp !='Youtube'" style="text-align: center; margin-top: 40px">
+
+
+            <div class="" style="border-bottom:1px solid #cfcfcf; text-align:center;margin-bottom:10px;">
+            <a class="btn btn-sm btn-primary pull-left glyphicon glyphicon-chevron-left" ng-if="showBackButton" ng-click="backButton()" style=""></a>
+            <h4>{{app}}</h4>
+            </div>
+
+
+            <div ng-if="!isConnected(app) && runningApp !='Local' && runningApp !='Youtube'" style="text-align: center;">
               <a class="btn btn-primary" ng-click="login(app)">
                 Connect {{app=='AmazonCloudDrive'? 'Amazon Cloud Drive' : app}}</a>
             </div>
-             <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center; margin-top: 40px">
-              <form id="submitIt" class="upload_resource1" method="post"  enctype="multipart/form-data" style="text-align: -moz-center;">                
 
-                <input type="file" class="fileUploadInput btn btn-primary" style="display: -webkit-inline-box;" name="resources" id="fileUploadInput" custom-on-change="uploadFile" accept="image/*|audio/*" title="Choose File" multiple/> 
+             <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center;height:227px;">
+              <form id="submitIt" class="upload_resource1" method="post"  enctype="multipart/form-data" style="text-align: -moz-center;"> 
+                <input type="file" class="fileUploadInput btn btn-primary" style="display: -webkit-inline-box;" name="resources" id="fileUploadInput" custom-on-change="uploadFileSelect" accept="image/*|audio/*" title="Choose File" multiple/> 
             </form>                
-            <div class="progress progress-striped active" style="margin-top:20px;">
-            <div class="progress-bar" style="min-width: 20px;">0%</div>
-            </div>
 
-                <div id="status"></div>
             </div>
-             <div ng-if="!isConnected(app) && runningApp =='Youtube'" style="text-align: center; margin-top: 40px">
+             <div ng-if="!isConnected(app) && runningApp =='Youtube'" style="text-align: center; height:227px;">
               <form id="submitVideo" class="form-horizontal upload_resource2" method="post" style="text-align: -moz-center;">                
               <div class="form-group">
               <label  class="col-sm-3 control-label">Enter YouTube watch url like http://www.youtube.com/watch?v=v8HVWDrGr6o</label>
@@ -284,10 +288,6 @@ img.loading {
 
             <div ng-if="isConnected(app)">
 
-            <div class="" style="border-bottom:1px solid #cfcfcf; text-align:center;margin-bottom:10px;">
-            <a class="btn btn-sm btn-primary pull-left glyphicon glyphicon-chevron-left" ng-if="showBackButton" ng-click="backButton()" style=""></a>
-            <h4>{{app}}</h4>
-            </div>
             <div class="thumbnails clearfix" style="height:227px;overflow-y:auto;">
               <div ng-if="!items" style="text-align: center;">
                 Loading...
@@ -320,11 +320,18 @@ img.loading {
                   </div>
                   </div>
          
-        <div style="clear:both; border-top:1px solid #cfcfcf;padding-top:5px;margin-top:10px;">
-        <a class="btn btn-primary pull-right import-btn has-spinner" ng-if="app && isConnected(app)" style="text-align:center;" ng-disabled="itemId.length == 0 || selectedItem.type == 'folder'" ng-click="import($event)"> <span class="spinner"><asset:image src="/images/spinner.gif" absolute="true"/></span> Import</a>
-        </div>
-    
                   
+            </div>
+
+            <div ng-if="isConnected(app) || runningApp =='Local' || runningApp =='Youtube'" >
+                <div style="clear:both; border-top:1px solid #cfcfcf;padding-top:5px;margin-top:10px;">
+                    <a id="importBtn" class="btn btn-primary pull-right import-btn has-spinner" ng-if="app" style="text-align:center;margin-right:0px;" disabled='disabled' ng-click="import($event)"> <span class="spinner"><asset:image src="/images/spinner.gif" absolute="true"/></span> Import</a>
+                </div>
+    
+                <div class="progress progress-striped active" style="height:35px;margin:0px;">
+                    <div class="progress-bar" style="line-height:35px;">0%</div>
+                </div>
+                <div id="status"></div>
             </div>
           </div>
           
