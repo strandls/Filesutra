@@ -35,4 +35,8 @@ class PicasaService {
             return Picasa.getDownloadUrlConnection(fileId, accessToken)
         }, access)
     }
+
+    java.io.File downloadFile(input, Access access) {
+       return Picasa.downloadFile(input, access); 
+    }
 }

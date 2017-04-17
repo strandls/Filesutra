@@ -204,7 +204,8 @@ credential.executeRefreshToken();
         .setQ("'$folderId' in parents and trashed=false")
         .setFields("nextPageToken, files(id,name,size,mimeType,thumbnailLink,webContentLink)")
         .setPageSize(25);
-
+println afterVal
+println "========================++"
         if(afterVal)
             files.setPageToken(afterVal);
 
@@ -212,6 +213,8 @@ credential.executeRefreshToken();
         result = folders.execute();
         f.addAll(result.getFiles());
         result = files.execute();
+println "========================++"
+println result.getFiles().size();
         f.addAll(result.getFiles());
 
         return ['files':f,'nextPageToken':files.getPageToken()];

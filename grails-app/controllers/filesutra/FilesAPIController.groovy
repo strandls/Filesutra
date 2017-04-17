@@ -81,7 +81,9 @@ class FilesAPIController {
                     }
                 }
             }
-            render ([success:true, itemResponse:itemResponse, 'afterval':items.nextPageToken] as JSON)
+            def res = [success:true, itemResponse:itemResponse];
+            if(items.nextPageToken) res['afterval'] = items.nextPageToken;
+            render ( res as JSON)
             return;
             } catch(Exception e) {
             e.printStackTrace();
@@ -380,7 +382,17 @@ class FilesAPIController {
     def importPicasaFile() {
         def input = request.JSON
         Access access = Access.get(session.picasaAccessId)
-        File file = new File(fileId: input.fileId, type: "PICASA", access: access,
+
+        java.io.File file = picasaService.downloadFile(input, access);
+        log.debug "Downloaded file absolute path ${file.getAbsolutePath()}"
+        def fileResponse = [
+        originalFilename:file.name,
+        url:file.getAbsolutePath(),
+        size:file.length(),
+        contentType:input.mimetype]
+        render fileResponse as JSON
+
+     /*   File file = new File(fileId: input.fileId, type: "PICASA", access: access,
         name: input.fileName, size: input.size)
         file.localFileId = Utils.randomString(15)
         file.save(flush: true, failOnError: true)
@@ -393,6 +405,7 @@ class FilesAPIController {
         mimetype: input.mimetype
         ]
         render fileResponse as JSON
+    */
     }
 
     def importDropboxFile() {

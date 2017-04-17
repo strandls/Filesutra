@@ -328,7 +328,7 @@ img.loading {
                     <a id="importBtn" class="btn btn-primary pull-right import-btn has-spinner" ng-if="app" style="text-align:center;margin-right:0px;" disabled='disabled' ng-click="import($event)"> <span class="spinner"><asset:image src="/images/spinner.gif" absolute="true"/></span> Import</a>
                 </div>
     
-                <div class="progress progress-striped active" style="height:35px;margin:0px;">
+                <div class="progress progress-striped active" style="height:35px;margin:0px;display:none;">
                     <div class="progress-bar" style="line-height:35px;">0%</div>
                 </div>
                 <div id="status"></div>

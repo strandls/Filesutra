@@ -4,6 +4,7 @@ import grails.util.Holders
 import groovyx.net.http.RESTClient
 import groovy.json.JsonBuilder
 import grails.converters.JSON;
+import java.io.File;
 
 import static groovyx.net.http.ContentType.URLENC
 
@@ -101,4 +102,23 @@ class Picasa {
                 requestContentType: URLENC)
         return resp.data.access_token
     }
+
+    static File downloadFile(input, Access access) {
+        File file = new File(grailsApplication.config.fileOps.resources.rootDir+File.separator+input.fileName);
+        OutputStream out = new FileOutputStream(file);
+
+        def accessInfo = JSON.parse(access.accessInfo)
+ 
+        URLConnection connection = getDownloadUrlConnection(input.fileId, accessInfo.accessToken);
+
+        try {
+            out << connection.inputStream
+        } catch(Exception e) {
+            e.printStackTrace(); 
+            return null;
+        } 
+        return file
+   }
+
+
 }

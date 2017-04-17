@@ -3,6 +3,7 @@ var filesutraControllers = angular.module("filesutraControllers", ["filesutraSer
 filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fileService", "authService",
         function($scope, $http, $location, fileService, authService) {
             $scope.toggleObject = true;
+            $scope.importing = false;
             $scope.loadMoreText = "Load More"
 
                 $scope.selectApp = function(app) {
@@ -46,15 +47,22 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 }
             }
             $scope.setProgress = function(percentVal){
+               
                 //$('#submitIt').submit();
                 var me1 = $('#submitIt');
                 var bar = $('.progress-bar');
                 var percent = $('.percent');
+                var progress = $('.progress');
                 var status = $('#status');
+                percentVal = Math.floor(percentVal)+'%';
                 bar.width(percentVal);
                 percent.html(percentVal);
                 bar.css("width", percentVal).text(percentVal);
-
+                if(percentVal == '0%' || percentVal == '100%') {
+                    progress.hide();    
+                } else {
+                    progress.show(); 
+                }
             }
 
             $scope.uploadFileSelect = function(event){
@@ -79,10 +87,10 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                         dataType : "json",
                         beforeSend: function() {
                             $('#status').empty();
-                            $scope.setProgress('0%');
+                            $scope.setProgress(0);
                         },
                         uploadProgress: function(event, position, total, percentComplete) {
-                            var percentVal = percentComplete + '%';
+                            var percentVal = percentComplete;
                             $scope.setProgress(percentVal);
                         },
                         complete: function(xhr) {
@@ -110,7 +118,11 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 // iframe
                                 parent.postMessage(message, '*');
                             }
-                            $(e.currentTarget).removeClass('active').text('Import');
+                            $scope.importing = false;
+                            $('#importBtn').prop('disabled', false);
+                            $('#importBtn').removeAttr('disabled');
+
+                            $(event.currentTarget).removeClass('active').text('Import');
                         },
                         error : function(xhr, ajaxOptions, thrownError){
                             console.log(thrownError);
@@ -150,8 +162,11 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
 
 
             $scope.selectItem = function (item) {
+                if($scope.importing && item.type != "folder") {
+                    return;
+                }
                 $('#status').empty();
-                $scope.setProgress('0%');
+                $scope.setProgress(0);
 
                 if (item.type == "folder") {
                     $location.path($location.path()+'/'+item.id);
@@ -187,7 +202,11 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
 
             $scope.import = function(e) {
                 console.log($(e));
-                $(e.currentTarget).addClass('active').text('Importing');
+                $scope.importing = true;
+                $(e.currentTarget).text('Importing');
+                $('#importBtn').prop('disabled', 'disabled');
+                $('#importBtn').attr('disabled', 'disabled');
+
                 if($scope.app == 'Local') {
                     $scope.uploadFile(e);
                     return;
@@ -196,7 +215,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 var uploadCount = 0;
                 var importedFiles = [];
                 $('#status').empty();
-                $scope.setProgress('0%');
+                $scope.setProgress(0);
                 for(var i=0;i<$scope.userGroupId.length;i++){
                     fileService.import($scope.app, $scope.userGroupId[i], function(data) {
                         //console.log(data);
@@ -216,15 +235,19 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 parent.postMessage(message, '*');
                             }
                             var percentVal = ((uploadCount/$scope.userGroupId.length)*100);
-                            $scope.setProgress(percentVal+'%');
-                            $(e.currentTarget).removeClass('active').text('Import');
+                            $scope.setProgress(percentVal);
+                            $scope.importing = false;
+                            $('#importBtn').prop('disabled', false);
+                            $('#importBtn').removeAttr('disabled');
+
+                            $(e.currentTarget).text('Import');
                             $('.selectedItem').removeClass('selectedClass');
                             $scope.selectedItem = undefined;
                             $scope.itemId.length = 0;
                             $scope.userGroupId.length = 0;
                         } else {
                             var percentVal = ((uploadCount/$scope.userGroupId.length)*100);
-                            $scope.setProgress(percentVal+'%');
+                            $scope.setProgress(percentVal);
                         }
                     });
                 }
@@ -250,7 +273,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
             $scope.$on("$locationChangeSuccess", function (event, newUrl) {
                 console.log(event);
                 $scope.gettingList(0);
-                $scope.setProgress('0%');
+                $scope.setProgress(0);
                 $('#status').empty();
                 $scope.filesSelected = false;
                 $('#importBtn').prop('disabled', 'disabled');

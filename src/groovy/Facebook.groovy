@@ -102,7 +102,7 @@ class Facebook {
     static File downloadFile(input, Access access) {
         println input
         println access
-        File file = new File(grailsApplication.config.fileOps.resources.rootDir+File.separator+input.fileName);
+        File file = new File(grailsApplication.config.fileOps.resources.rootDir+File.separator+input.fileId);
         //OutputStream out = new FileOutputStream(file);
         try {
         def accessInfo = JSON.parse(access.accessInfo)
