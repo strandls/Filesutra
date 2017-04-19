@@ -204,29 +204,29 @@ img.loading {
     </li>
     <li class="list-group-item"  ng-click="selectApp('Facebook')">
     <a>Facebook</a>
-    <a ng-if="isConnected('Facebook')" ng-click="logout('Facebook')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
+    <a title="logout" ng-if="isConnected('Facebook')" ng-click="logout('Facebook')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
     </li>
     <li class="list-group-item" ng-click="selectApp('Google')">
     <a >Google Drive</a>
-    <a ng-if="isConnected('Google')" ng-click="logout('Google')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
+    <a title="logout"  ng-if="isConnected('Google')" ng-click="logout('Google')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
     </li>
 
     <li class="list-group-item" ng-click="selectApp('Photos')">
     <a>Google Photos</a>
-    <a ng-if="isConnected('Photos')" ng-click="logout('Photos')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
+    <a title="logout"  ng-if="isConnected('Photos')" ng-click="logout('Photos')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
     </li>
 
     <li class="list-group-item" ng-click="selectApp('Flickr')">
     <a >Flickr</a>
-    <a ng-if="isConnected('Flickr')" ng-click="logout('Flickr')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
+    <a title="logout"  ng-if="isConnected('Flickr')" ng-click="logout('Flickr')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
     </li>
     <li class="list-group-item" ng-click="selectApp('Dropbox')">
     <a>Dropbox</a>
-    <a ng-if="isConnected('Dropbox')" ng-click="logout('Dropbox')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
+    <a title="logout"  ng-if="isConnected('Dropbox')" ng-click="logout('Dropbox')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
     </li>
     <li class="list-group-item" ng-click="selectApp('Wikimedia')">
     <a>Wikimedia</a>
-    <a ng-if="isConnected('Wikimedia')" ng-click="logout('Wikimedia')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
+    <a title="logout"  ng-if="isConnected('Wikimedia')" ng-click="logout('Wikimedia')" class="pull-right"><i class="glyphicon glyphicon-eject"></i></a>
     </li>
     <li class="list-group-item" ng-click="selectApp('Youtube')">
     <a >Youtube</a>
