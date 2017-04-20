@@ -70,6 +70,8 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 $('#importBtn').removeAttr('disabled');
 
                 $scope.filesSelected = true;
+
+                $scope.uploadFile(event);
                 return false;
             }
 
@@ -389,5 +391,8 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                         event.preventDefault();
                      }
                 });
+            }
+            $scope.chooseFile = function() {
+                $('#fileUploadInput').trigger('click');
             }
         }]);

@@ -263,12 +263,24 @@ img.loading {
                 Connect {{app=='AmazonCloudDrive'? 'Amazon Cloud Drive' : app}}</a>
             </div>
 
-             <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center;height:227px;">
-              <form id="submitIt" class="upload_resource1" method="post"  enctype="multipart/form-data" style="text-align: -moz-center;"> 
-                <input type="file" class="fileUploadInput btn btn-primary" style="display: -webkit-inline-box;" name="resources" id="fileUploadInput" custom-on-change="uploadFileSelect" accept="image/*|audio/*" title="Choose File" multiple/> 
-            </form>                
+             <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center;height:227px;line-height:40px;">
+                <form id="submitIt" class="upload_resource1" method="post"  enctype="multipart/form-data" style="text-align: -moz-center;"> 
+                    <input type="file" class="fileUploadInput btn btn-primary" style="display: none;" name="resources" id="fileUploadInput" custom-on-change="uploadFileSelect" accept="image/*|audio/*" title="Choose File" multiple/> 
+                </form>                
 
-            </div>
+                <i class="glyphicon glyphicon-file" style="font-size: 7.2em;color:blue;cursor:pointer;" ng-click="chooseFile()"></i>
+                <br/>
+                Select files from My Computer to upload or choose from
+                <br/>
+                <a ng-click="selectApp('Local')" >My Computer</a>,
+                <a ng-click="selectApp('Facebook')" >Facebook</a>,
+                <a ng-click="selectApp('Google')">Google Drive</a>,
+                <a ng-click="selectApp('Photos')">Google Photos</a>,
+                <a ng-click="selectApp('Flickr')">Flickr</a>,
+                <a ng-click="selectApp('Dropbox')">Dropbox</a>,
+                <a ng-click="selectApp('Wikimedia')">Wikimedia</a>,
+                <a ng-click="selectApp('Youtube')">Youtube</a> 
+                </div>
              <div ng-if="!isConnected(app) && runningApp =='Youtube'" style="text-align: center; height:227px;">
               <form id="submitVideo" class="form-horizontal upload_resource2" method="post" style="text-align: -moz-center;">                
               <div class="form-group">
