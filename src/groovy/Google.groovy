@@ -201,7 +201,7 @@ credential.executeRefreshToken();
 
 
         def files = service.files().list()
-        .setQ("'$folderId' in parents and trashed=false and mimeType != 'application/vnd.google-apps.folder'")
+        .setQ("'$folderId' in parents and trashed=false and (mimeType contains 'image/' or mimeType contains 'audio/')")
         .setFields("files(id,name,size,mimeType,thumbnailLink,webContentLink), nextPageToken")
         .setPageSize(25);
         
@@ -210,12 +210,11 @@ credential.executeRefreshToken();
         if(!afterVal) {
             FileList foldersList = folders.execute();
             f.addAll(foldersList.getFiles());
-        } else {
+        } else if(afterVal){
             files.setPageToken(afterVal);
         }
 
         result = files.execute();
- 
        f.addAll(result.getFiles());
 
         return ['files':f,'nextPageToken':result.getNextPageToken()];

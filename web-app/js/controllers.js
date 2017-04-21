@@ -309,7 +309,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                     if(code==0){
                         $scope.showButton = false;
                         delete $scope.items;
-                        if($scope.afterTokenVal==undefined)
+                        //if($scope.afterTokenVal==undefined)
                             $scope.afterTokenVal = '';
 
                         if ($scope.isConnected(app)) {
