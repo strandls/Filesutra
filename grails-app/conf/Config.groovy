@@ -102,7 +102,7 @@ grails.hibernate.osiv.readonly = false
 environments {
 development {
     grails.logging.jul.usebridge = true
-    grails.serverURL = "http://localhost.filesutra.indiabiodiversity.org"
+    grails.serverURL = "http://localhost.fileops.indiabiodiversity.org"
     fileOps{
         resources {
             app.rootDir = "${userHome}/git/biodiv/app-conf"
@@ -113,7 +113,7 @@ development {
 }
 pamba {
     grails.logging.jul.usebridge = false
-    grails.serverURL = "http://www.filesutra.pamba.strandls.com"
+    grails.serverURL = "http://www.fileops.pamba.strandls.com"
     fileOps{
         resources {
             app.rootDir = "/apps/biodiv"
@@ -123,7 +123,7 @@ pamba {
 }
 kk {
     grails.logging.jul.usebridge = false
-    grails.serverURL = "http://www.filesutra.indiabiodiversity.org"
+    grails.serverURL = "http://www.fileops.indiabiodiversity.org"
     fileOps{
         resources {
             app.rootDir = "/apps/biodiv"

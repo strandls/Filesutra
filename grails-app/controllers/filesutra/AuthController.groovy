@@ -198,7 +198,7 @@ class AuthController {
                 session[AmazonCloudDriveAPIType.NODE.toString()] = null
                 session[AmazonCloudDriveAPIType.METADATA.toString()] = null
                 break
-            case "Wikipedia":
+            case "Wikimedia":
                 session.wikipediaAccessId = null
                 break
 
