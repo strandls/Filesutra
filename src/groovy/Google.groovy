@@ -197,27 +197,28 @@ credential.executeRefreshToken();
         FileList result;
         def folders = service.files().list()
         .setQ("'$folderId' in parents and trashed=false and mimeType = 'application/vnd.google-apps.folder'")
-        .setFields("nextPageToken, files(id,name,size,mimeType,thumbnailLink,webContentLink)")
+        .setFields("files(id,name,size,mimeType,thumbnailLink,webContentLink)")
 
 
         def files = service.files().list()
-        .setQ("'$folderId' in parents and trashed=false")
-        .setFields("nextPageToken, files(id,name,size,mimeType,thumbnailLink,webContentLink)")
+        .setQ("'$folderId' in parents and trashed=false and mimeType != 'application/vnd.google-apps.folder'")
+        .setFields("files(id,name,size,mimeType,thumbnailLink,webContentLink), nextPageToken")
         .setPageSize(25);
-println afterVal
-println "========================++"
-        if(afterVal)
-            files.setPageToken(afterVal);
+        
 
         def f = [];
-        result = folders.execute();
-        f.addAll(result.getFiles());
-        result = files.execute();
-println "========================++"
-println result.getFiles().size();
-        f.addAll(result.getFiles());
+        if(!afterVal) {
+            FileList foldersList = folders.execute();
+            f.addAll(foldersList.getFiles());
+        } else {
+            files.setPageToken(afterVal);
+        }
 
-        return ['files':f,'nextPageToken':files.getPageToken()];
+        result = files.execute();
+ 
+       f.addAll(result.getFiles());
+
+        return ['files':f,'nextPageToken':result.getNextPageToken()];
     }
 
     static def getFile(String fileId, String accessToken) {

@@ -301,12 +301,16 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                     folderId = chunks[chunks.length - 1];
                 }
                 console.log($scope.app);
+                        console.log('*******************');
+                        console.log($scope.afterTokenVal);
+
 //                if($scope.app == "Facebook" || $scope.app == "Flickr"){
 
                     if(code==0){
                         $scope.showButton = false;
                         delete $scope.items;
-                        $scope.afterTokenVal = '';
+                        if($scope.afterTokenVal==undefined)
+                            $scope.afterTokenVal = '';
 
                         if ($scope.isConnected(app)) {
                             $scope.userGroupId = [];

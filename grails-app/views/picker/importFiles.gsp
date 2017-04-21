@@ -190,6 +190,20 @@
 img.loading {
         background: transparent url(spinner.gif) no-repeat scroll center center;
 }
+.selectFile {
+font-size: 7.2em;
+color:#9E9E9E;
+cursor:pointer;
+}
+.selectFile.plus {
+    color:white;
+    top: -25px;
+    left: -75px;
+    font-size: 2.2em;
+}
+.selectFile.active {
+    color:#2962FF;
+}
   </style>
 </head>
 
@@ -263,16 +277,22 @@ img.loading {
                 Connect {{app=='AmazonCloudDrive'? 'Amazon Cloud Drive' : app}}</a>
             </div>
 
-             <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center;height:227px;line-height:40px;">
+             <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center;height:227px;line-height:25px;">
                 <form id="submitIt" class="upload_resource1" method="post"  enctype="multipart/form-data" style="text-align: -moz-center;"> 
                     <input type="file" class="fileUploadInput btn btn-primary" style="display: none;" name="resources" id="fileUploadInput" custom-on-change="uploadFileSelect" accept="image/*|audio/*" title="Choose File" multiple/> 
                 </form>                
 
-                <i class="glyphicon glyphicon-file" style="font-size: 7.2em;color:blue;cursor:pointer;" ng-click="chooseFile()"></i>
+                <i class="glyphicon glyphicon-file selectFile" style="" ng-click="chooseFile()"   ng-class="{active: hover}" 
+                     ng-mouseenter="hover = true"
+                          ng-mouseleave="hover = false"></i>
+                <i class="glyphicon glyphicon-plus selectFile plus" style="" ng-mouseenter="hover = true"
+                          ng-mouseleave="hover = false" ></i>
+
                 <br/>
-                Select files from My Computer to upload or choose from
+                <span class="lead">Select files to upload </span>
                 <br/>
-                <a ng-click="selectApp('Local')" >My Computer</a>,
+                or choose from
+                <br/>
                 <a ng-click="selectApp('Facebook')" >Facebook</a>,
                 <a ng-click="selectApp('Google')">Google Drive</a>,
                 <a ng-click="selectApp('Photos')">Google Photos</a>,
