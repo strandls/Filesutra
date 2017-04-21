@@ -194,11 +194,12 @@ img.loading {
 font-size: 7.2em;
 color:#9E9E9E;
 cursor:pointer;
+left:30px;
 }
 .selectFile.plus {
     color:white;
     top: -25px;
-    left: -75px;
+    left: -43px;
     font-size: 2.2em;
 }
 .selectFile.active {
@@ -282,11 +283,8 @@ cursor:pointer;
                     <input type="file" class="fileUploadInput btn btn-primary" style="display: none;" name="resources" id="fileUploadInput" custom-on-change="uploadFileSelect" accept="image/*|audio/*" title="Choose File" multiple/> 
                 </form>                
 
-                <i class="glyphicon glyphicon-file selectFile" style="" ng-click="chooseFile()"   ng-class="{active: hover}" 
-                     ng-mouseenter="hover = true"
-                          ng-mouseleave="hover = false"></i>
-                <i class="glyphicon glyphicon-plus selectFile plus" style="" ng-mouseenter="hover = true"
-                          ng-mouseleave="hover = false" ></i>
+                <i class="glyphicon glyphicon-file selectFile" ng-click="chooseFile()" ng-class="{active: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false"></i>
+                <i class="glyphicon glyphicon-plus selectFile plus" ng-click="chooseFile()" ng-mouseenter="hover = true" ng-mouseleave="hover = false" ></i>
 
                 <br/>
                 <span class="lead">Select files to upload </span>
