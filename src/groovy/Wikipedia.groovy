@@ -23,8 +23,8 @@ class Wikipedia {
 
     //private static final String CLIENT_ID     = grailsApplication.config.auth.wikimedia.CLIENT_ID
     //private static final String CLIENT_SECRET = grailsApplication.config.auth.wikimedia.CLIENT_SECRET
-    private static final String REDIRECT_URI = grailsApplication.config.auth.wikipedia.REDIRECT_URI
-    private static final String AUTH_URL = grailsApplication.config.auth.wikipedia.AUTH_URL
+    private static final String REDIRECT_URI = grailsApplication.config.auth.wikimedia.REDIRECT_URI
+    private static final String AUTH_URL = grailsApplication.config.auth.wikimedia.AUTH_URL
 
     private static final String API_URL = "commons.wikimedia.org"
 
