@@ -72,8 +72,11 @@
 
 <div class="container submitObs" style="padding: 10px">
   <div class="row" ng-controller="AppCtrl" ng-init="init(${appSettings})">
+
+        <g:if test="${flash.message}"> 
+        <div class="alert alert-danger">${flash.message}</div>
+        </g:if>
       <div class="row">
-       
         <form id="wikiLoginForm" action='wikimediaCallback' method='POST' class="form-horizontal" name='loginForm'>  
         
         <div class="control-group">         

@@ -155,13 +155,19 @@ class AuthController {
     def wikimediaCallback(String username, String password) {
         if (username != null && password != null) {
            def accessInfo = Wikipedia.exchangeCode(username, password)
-           def emailId = Wikipedia.getEmailId(accessInfo.accessToken)
-           Access wikipediaAccess = authService.wikipediaLogin(emailId, accessInfo)
-            if (wikipediaAccess) {
-                session.wikipediaAccessId = wikipediaAccess.id
-            }
+           if(accessInfo.success == false) {
+               flash.message = accessInfo.msg;
+               redirect(uri: '/auth/wikimediaLogin')
+           } else {
+               def emailId = Wikipedia.getEmailId(accessInfo.accessToken)
+               Access wikipediaAccess = authService.wikipediaLogin(emailId, accessInfo)
+               if (wikipediaAccess) {
+                   session.wikipediaAccessId = wikipediaAccess.id
+               }
+
+               redirect(uri: '/picker#Wikimedia')
+           }
         }
-        redirect(uri: '/picker#Wikimedia')
     }
 
     def logout(String app) {

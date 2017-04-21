@@ -63,7 +63,7 @@ class Wikipedia {
         {
             // deal with failed login attempt
             ex.printStackTrace();
-            render (['msg':ex.getMessage()] as JSON)
+            return['success':false, 'msg':ex.getMessage()]
         }
 
      }
