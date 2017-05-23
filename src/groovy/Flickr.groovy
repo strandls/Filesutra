@@ -16,12 +16,13 @@ import com.flickr4java.flickr.auth.Permission;
 import com.flickr4java.flickr.photos.Photo;
 import com.flickr4java.flickr.photos.PhotoList;
 import com.flickr4java.flickr.photos.PhotosInterface;
+import com.flickr4java.flickr.people.PeopleInterface;
 import com.flickr4java.flickr.photos.Size;
 import com.flickr4java.flickr.photosets.Photoset;
 import com.flickr4java.flickr.photosets.PhotosetsInterface;
 import com.flickr4java.flickr.util.AuthStore;
 import com.flickr4java.flickr.util.FileAuthStore;
-
+import com.flickr4java.flickr.photos.Extras;
 import org.scribe.model.Token;
 import org.scribe.model.Verifier;
 
@@ -120,7 +121,7 @@ username:resp.data.auth.user.@username.text()
 
     static def listItems(String folderId, String after, Access access, Auth auth) {
         PhotosetsInterface pi = getFlickrJ().getPhotosetsInterface();
-        PhotosInterface photoInt = getFlickrJ().getPhotosInterface();
+        PeopleInterface photoInt = getFlickrJ().getPeopleInterface();
         List allPhotos = [];
         List allPhotoSets =  [];
 
@@ -140,8 +141,13 @@ username:resp.data.auth.user.@username.text()
             try {
                 int notInSetPage = 1;
                 Collection notInASet = new ArrayList();
+                Set extras = new HashSet();
+                extras.add(Extras.DATE_UPLOAD);
+                extras.add(Extras.DATE_TAKEN);
+                extras.add(Extras.LAST_UPDATE);
                 while (true) {
-                    Collection nis = photoInt.getNotInSet(500, notInSetPage);
+                    Collection nis = photoInt.getPhotos(nsid, null, null, null, null, null, null, null, extras, 500, notInSetPage);
+                    println nis
                     notInASet.addAll(nis);
                     if (nis.size() < 500) {
                         break;
@@ -149,11 +155,17 @@ username:resp.data.auth.user.@username.text()
                     notInSetPage++;
                 }
                 allPhotos.addAll(notInASet);
+                allPhotos.each {
+                    println it.id
+                    println it.datePosted
+                    println it.dateTaken
+                    println it.lastUpdate
+                }
             } catch(Exception e) {
                 e.printStackTrace();
             }
         }
-        return ['photoset':allPhotoSets, 'photo':allPhotos];
+        return ['photoset':allPhotoSets, 'photo':allPhotos.sort{a,b-> b.datePosted<=>a.datePosted}];
     }
 
 /*
