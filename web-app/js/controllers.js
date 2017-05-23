@@ -3,13 +3,16 @@ var filesutraControllers = angular.module("filesutraControllers", ["filesutraSer
 filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fileService", "authService",
         function($scope, $http, $location, fileService, authService) {
             $scope.toggleObject = true;
+            $scope.localImporting = {};
+            $scope.localImporting.importing = false;;
             $scope.importing = false;
-            $scope.loadMoreText = "Load More"
+            $scope.loadMoreText = "Load More";
+            $scope.dropzone = {};
 
-                $scope.selectApp = function(app) {
-                    $scope.runningApp = app;
-                    $location.path(app);
-                }
+            $scope.selectApp = function(app) {
+                $scope.runningApp = app;
+                $location.path(app);
+            }
 
             $scope.login = function(app) {
                 var redirectUrl = '/auth/' + (app == 'AmazonCloudDrive'? 'amazon' : app.toLowerCase());
@@ -46,25 +49,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                     return false;
                 }
             }
-            $scope.setProgress = function(percentVal){
-               
-                //$('#submitIt').submit();
-                var me1 = $('#submitIt');
-                var bar = $('.progress-bar');
-                var percent = $('.percent');
-                var progress = $('.progress');
-                var status = $('#status');
-                percentVal = Math.floor(percentVal)+'%';
-                bar.width(percentVal);
-                percent.html(percentVal);
-                bar.css("width", percentVal).text(percentVal);
-                if(percentVal == '0%' || percentVal == '100%') {
-                    progress.hide();    
-                } else {
-                    progress.show(); 
-                }
-            }
-
+            
             $scope.uploadFileSelect = function(event){
                 $('#importBtn').prop('disabled', false);
                 $('#importBtn').removeAttr('disabled');
@@ -83,7 +68,6 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 var status = $('#status');
 
                 $scope.filesSelected = false;
-
                 me1.ajaxSubmit({
                         url : "/demo/upload",
                         dataType : "json",
@@ -164,7 +148,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
 
 
             $scope.selectItem = function (item) {
-                if($scope.importing && item.type != "folder") {
+                if(($scope.importing && item.type != "folder") || $scope.localImporting.importing) {
                     return;
                 }
                 $('#status').empty();
@@ -210,7 +194,8 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                 $('#importBtn').attr('disabled', 'disabled');
 
                 if($scope.app == 'Local') {
-                    $scope.uploadFile(e);
+                    $scope.dropzone.processDropzone();
+                    $scope.importing = false;
                     return;
                 }
 
@@ -267,7 +252,9 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                     $('.container').removeClass('busy');
                 });
                 $scope.filesSelected = false;
+                $scope.dropzone.setProgress = $scope.setProgress;
             }
+
             $scope.backButton = function(){
                 window.history.back();
             }
@@ -275,7 +262,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
             $scope.$on("$locationChangeSuccess", function (event, newUrl) {
                 console.log(event);
                 $scope.gettingList(0);
-                $scope.setProgress(0);
+                if($scope.setProgress) $scope.setProgress(0);
                 $('#status').empty();
                 $scope.filesSelected = false;
                 $('#importBtn').prop('disabled', 'disabled');
@@ -399,4 +386,134 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
             $scope.chooseFile = function() {
                 $('#fileUploadInput').trigger('click');
             }
+            $scope.setProgress = function(percentVal){
+                var bar = $('.progress-bar').last();
+                var percent = $('.percent').last();
+                var progress = $('.progress').last();
+                console.log(bar);
+                percentVal = Math.floor(percentVal)+'%';
+                bar.width(percentVal);
+                percent.html(percentVal);
+                bar.css("width", percentVal).find('span').text(percentVal);
+                if(percentVal == '0%') {
+                    progress.hide();    
+                } else {
+                    progress.show(); 
+                }
+            }
+
+
         }]);
+
+filesutraControllers.directive('dropzone', function() {
+    return {
+            scope: { 
+                dropzone1 : '=',
+                localImporting : '='
+            },
+        link: function(scope, element, attrs) {
+            console.log(scope);
+            
+            var previewNode = document.querySelector("#template");
+            previewNode.id = "";
+            var previewTemplate = previewNode.parentNode.innerHTML;
+            previewNode.parentNode.removeChild(previewNode);
+
+            var config = {
+                url: '/demo/upload',
+                paramName: "resources",
+                maxThumbnailFilesize: 10,
+                uploadMultiple: false,
+                previewsContainer: "#previews", // Define the container to display the previews
+                previewTemplate : previewTemplate,
+                autoProcessQueue: false,
+                autoQueue:false,
+                thumbnailWidth: 80,
+                thumbnailHeight: 80,
+                createImageThumbnails:true,
+                parallelUploads:20,
+                accepted:'image/*,audio/*'
+            };
+
+            var eventHandlers = {
+                'drop':function() {
+                },
+                'addedfile': function(file) {
+//                  file.previewElement = Dropzone.createElement(this.options.previewTemplate);
+                    //file.previewElement.querySelector(".start").onclick = function() { dropzone.enqueueFile(file); };
+                    $('#importBtn').prop('disabled', false).removeAttr('disabled').removeClass('active').text('Import');
+                    scope.filesSelected = true;
+                    scope.localImporting.importing = true;
+                },
+                'totaluploadprogress':function(event, progress, bytesSent) {
+                    document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+                    /*if(progress==100) {
+                        $('#importBtn').prop('disabled', false);
+                        $('#importBtn').removeAttr('disabled');
+                        scope.filesSelected = true;
+                    }*/
+                },
+                'uploadprogress':function(event, progress, bytesSent) {
+                    //scope.internalControl.setProgress(progress);
+                },
+                'processing':function(file) {
+                },
+                'complete': function(event) {
+                 },  
+                'success': function (event, response) {
+                    if(scope.images == undefined) scope.images = [];
+                        scope.images.push(response[0]);
+                },
+                'queuecomplete':function(event) {
+                    //this.options.autoProcessQueue = false;
+                    document.querySelector("#total-progress").style.opacity = "0";
+
+                    //dropzone.disable();
+                    var images = scope.images;
+                    var message = {
+                        type  : 'filesutra',
+                        data   :  images
+                    }
+                    if (window.opener) {
+                        window.opener.postMessage(message, '*');
+                        window.close();
+                    } else {
+                        // iframe
+                        parent.postMessage(message, '*');
+                    }
+                    $('#importBtn').prop('disabled', false).removeAttr('disabled').removeClass('active').text('Import');
+                    //$('#status').html('');
+                    scope.localImporting.importing = false;
+                    scope.internalControl.resetDropzone();
+
+                }, 
+                'error':function(event, errorMessage, xhr) {
+                    console.log(event);
+                    console.log(errorMessage);
+                }
+
+            };
+            scope.localImporting = scope.localImporting || {};
+            scope.internalControl = scope.dropzone1 || {};
+            dropzone = new Dropzone(element[0], config);
+            angular.forEach(eventHandlers, function(handler, event) {
+                dropzone.on(event, handler);
+            });
+            scope.internalControl.processDropzone = function() {
+                var addedfiles = dropzone.getFilesWithStatus(Dropzone.ADDED);
+                if(addedfiles)
+                    dropzone.enqueueFiles(addedfiles);
+                console.log('processing dropzone');
+                dropzone.processQueue();
+            };
+            scope.internalControl.resetDropzone = function() {
+                scope.images = [];
+                dropzone.removeAllFiles();
+                scope.filesSelected = false;
+                //dropzone.enable();
+            }
+
+        }
+    }
+});
+

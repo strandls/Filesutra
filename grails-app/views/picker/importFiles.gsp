@@ -20,6 +20,7 @@
   <script src="/js/controllers.js"></script>
   <script src="/js/services.js"></script>
   <script src="/js/jquery.form.min.js"></script>
+  <script src="/js/dropzone.js"></script>
   <!--script src="http://filesutra.com/js/filesutra.js"></script-->
 
   <style>
@@ -205,6 +206,55 @@ left:30px;
 .selectFile.active {
     color:#2962FF;
 }
+.progress-bar {
+    text-align:left;
+}
+
+/* Mimic table appearance */
+div.table {
+display: table;
+}
+div.table .file-row {
+display: table-row;
+}
+div.table .file-row > div {
+display: table-cell;
+         vertical-align: top;
+         border-top: 1px solid #ddd;
+padding: 8px;
+}
+div.table .file-row:nth-child(odd) {
+background: #f9f9f9;
+}
+
+
+
+/* The total progress gets shown by event listeners */
+#total-progress {
+opacity: 0;
+transition: opacity 0.3s linear;
+}
+
+/* Hide the progress bar when finished */
+#previews .file-row.dz-success .progress {
+opacity: 0;
+transition: opacity 0.3s linear;
+}
+
+/* Hide the delete button initially */
+#previews .file-row .delete {
+display: none;
+}
+
+/* Hide the start and cancel buttons and show the delete button */
+
+#previews .file-row.dz-success .start,
+#previews .file-row.dz-success .cancel {
+display: none;
+}
+#previews .file-row.dz-success .delete {
+display: block;
+}
   </style>
 </head>
 
@@ -279,16 +329,56 @@ left:30px;
             </div>
 
              <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center;height:227px;line-height:25px;">
-                <form id="submitIt" class="upload_resource1" method="post"  enctype="multipart/form-data" style="text-align: -moz-center;"> 
-                    <input type="file" class="fileUploadInput btn btn-primary" style="display: none;" name="resources" id="fileUploadInput" custom-on-change="uploadFileSelect" accept="image/*|audio/*" title="Choose File" multiple/> 
-                </form>                
+             <div id="uploadForm">
+                <form id="submitIt" class="upload_resource1 dropzone" dropzone local-importing="local-importing" dropzone1="dropzone" method="post"  enctype="multipart/form-data" style="text-align: -moz-center;height:185px;border:1px solid;overflow:auto;"> 
+                    <div class="dz-default dz-message">
+                        <i class="glyphicon glyphicon-file selectFile" ng-class="{active: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false"></i>
+                        <i class="glyphicon glyphicon-plus selectFile plus" ng-mouseenter="hover = true" ng-mouseleave="hover = false" ></i>
+                        <br/>
+                        <span class="lead">Drag and drop or click to select files to upload </span>
+                    </div>
 
-                <i class="glyphicon glyphicon-file selectFile" ng-click="chooseFile()" ng-class="{active: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false"></i>
-                <i class="glyphicon glyphicon-plus selectFile plus" ng-click="chooseFile()" ng-mouseenter="hover = true" ng-mouseleave="hover = false" ></i>
+                    <div class="fallback">
+                        <input type="file" class="fileUploadInput btn btn-primary" style="display: none;" name="resources" id="fileUploadInput" custom-on-change="uploadFileSelect" accept="image/*|audio/*" title="Choose File" multiple/> 
+                    </div>
+                <div class="table table-striped" class="files" id="previews">
 
-                <br/>
-                <span class="lead">Select files to upload </span>
-                <br/>
+                <div id="template" class="file-row">
+                <!-- This is used as the file preview template -->
+                <div>
+                <span class="preview"><img data-dz-name /></span>
+                </div>
+                <div>
+                <p class="name" data-dz-name></p>
+                <strong class="error text-danger" data-dz-errormessage></strong>
+                </div>
+                <div>
+                <p class="size" data-dz-size></p>
+                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div class="progress-bar progress-bar-success" style="width:0%;" data-dz-uploadprogress></div>
+                </div>
+                </div>
+                <div>
+                <!--button class="btn btn-primary start">
+                <i class="glyphicon glyphicon-upload"></i>
+                <span>Start</span>
+                </button-->
+                <button data-dz-remove class="btn btn-warning cancel">
+                <i class="glyphicon glyphicon-ban-circle"></i>
+                <span>Cancel</span>
+                </button>
+                <button data-dz-remove class="btn btn-danger delete">
+                <i class="glyphicon glyphicon-trash"></i>
+                <span>Delete</span>
+                </button>
+                </div>
+                </div>
+
+                </div>
+
+                </form>           
+                </div>
+ 
                 or choose from
                 <br/>
                 <a ng-click="selectApp('Facebook')" >Facebook</a>,
@@ -298,8 +388,9 @@ left:30px;
                 <a ng-click="selectApp('Dropbox')">Dropbox</a>,
                 <a ng-click="selectApp('Wikimedia')">Wikimedia</a>,
                 <a ng-click="selectApp('Youtube')">Youtube</a> 
+
                 </div>
-             <div ng-if="!isConnected(app) && runningApp =='Youtube'" style="text-align: center; height:227px;">
+            <div ng-if="!isConnected(app) && runningApp =='Youtube'" style="text-align: center; height:227px;">
               <form id="submitVideo" class="form-horizontal upload_resource2" method="post" style="text-align: -moz-center;">                
               <div class="form-group">
               <label  class="col-sm-3 control-label">Enter YouTube watch url like http://www.youtube.com/watch?v=v8HVWDrGr6o</label>
@@ -358,8 +449,8 @@ left:30px;
                     <a id="importBtn" class="btn btn-primary pull-right import-btn has-spinner" ng-if="app" style="text-align:center;margin-right:0px;" disabled='disabled' ng-click="import($event)"> <span class="spinner"><asset:image src="/images/spinner.gif" absolute="true"/></span> Import</a>
                 </div>
     
-                <div class="progress progress-striped active" style="height:35px;margin:0px;display:none;">
-                    <div class="progress-bar" style="line-height:35px;">0%</div>
+                <div id="total-progress" class="progress progress-striped active" style="height:35px;margin:0px;display:none;">
+                    <div class="progress-bar" style="line-height:35px;"><span>0%</span></div>
                 </div>
                 <div id="status"></div>
             </div>
@@ -371,4 +462,7 @@ left:30px;
   </div>
 </div>
 </body>
+<script type="text/javascript">
+Dropzone.autoDiscover = false;
+</script>
 </html>
