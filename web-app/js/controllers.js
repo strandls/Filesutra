@@ -437,6 +437,8 @@ filesutraControllers.directive('dropzone', function() {
 
             var eventHandlers = {
                 'drop':function() {
+                    $('#uploadForm').hide();
+                    $('#previews').show();
                 },
                 'addedfile': function(file) {
 //                  file.previewElement = Dropzone.createElement(this.options.previewTemplate);
@@ -444,6 +446,12 @@ filesutraControllers.directive('dropzone', function() {
                     $('#importBtn').prop('disabled', false).removeAttr('disabled').removeClass('active').text('Import');
                     scope.filesSelected = true;
                     scope.localImporting.importing = true;
+
+                    file.previewElement.querySelector('.cancel').onclick = function() {
+                        if(dropzone.files.length == 0) {
+                            scope.internalControl.resetDropzone();
+                        }
+                    };
                 },
                 'totaluploadprogress':function(event, progress, bytesSent) {
                     document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
@@ -501,16 +509,21 @@ filesutraControllers.directive('dropzone', function() {
             });
             scope.internalControl.processDropzone = function() {
                 var addedfiles = dropzone.getFilesWithStatus(Dropzone.ADDED);
-                if(addedfiles)
+                if(addedfiles.length > 0) {
                     dropzone.enqueueFiles(addedfiles);
-                console.log('processing dropzone');
-                dropzone.processQueue();
+                    dropzone.processQueue();
+                } else {
+                    scope.internalControl.resetDropzone();
+                }
             };
             scope.internalControl.resetDropzone = function() {
                 scope.images = [];
                 dropzone.removeAllFiles();
                 scope.filesSelected = false;
                 //dropzone.enable();
+                $('#uploadForm').show();
+                $('#previews').show();
+                $('#importBtn').prop('disabled', false).removeAttr('disabled').removeClass('active').text('Import');
             }
 
         }

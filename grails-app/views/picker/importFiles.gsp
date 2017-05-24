@@ -29,7 +29,7 @@
     overflow-x:hidden;
     height:329px;
   }
-    li a {
+    li a,a:focus, a:hover  {
       cursor: pointer;
     }
     .filesPane {
@@ -328,9 +328,9 @@ display: block;
                 Connect {{app=='AmazonCloudDrive'? 'Amazon Cloud Drive' : app}}</a>
             </div>
 
-             <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center;height:227px;line-height:25px;">
-             <div id="uploadForm">
-                <form id="submitIt" class="upload_resource1 dropzone" dropzone local-importing="local-importing" dropzone1="dropzone" method="post"  enctype="multipart/form-data" style="text-align: -moz-center;height:185px;border:1px solid;overflow:auto;"> 
+             <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center;height:227px;line-height:25px;position:relative;overflow:auto;">
+             <div id="uploadForm" style="text-align: -moz-center;overflow:auto;position:absolute;height:100%;width:100%;">
+                <form id="submitIt" class="upload_resource1 dropzone" dropzone local-importing="local-importing" dropzone1="dropzone" method="post"  enctype="multipart/form-data"> 
                     <div class="dz-default dz-message">
                         <i class="glyphicon glyphicon-file selectFile" ng-class="{active: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false"></i>
                         <i class="glyphicon glyphicon-plus selectFile plus" ng-mouseenter="hover = true" ng-mouseleave="hover = false" ></i>
@@ -341,7 +341,21 @@ display: block;
                     <div class="fallback">
                         <input type="file" class="fileUploadInput btn btn-primary" style="display: none;" name="resources" id="fileUploadInput" custom-on-change="uploadFileSelect" accept="image/*|audio/*" title="Choose File" multiple/> 
                     </div>
-                <div class="table table-striped" class="files" id="previews">
+                </form>           
+
+                <div style="position:absolute;bottom:0;width:100%;left:0;right:0;"> 
+                    or choose from
+                    <br/>
+                    <a ng-click="selectApp('Facebook')" >Facebook</a>,
+                    <a ng-click="selectApp('Google')">Google Drive</a>,
+                    <a ng-click="selectApp('Photos')">Google Photos</a>,
+                    <a ng-click="selectApp('Flickr')">Flickr</a>,
+                    <a ng-click="selectApp('Dropbox')">Dropbox</a>,
+                    <a ng-click="selectApp('Wikimedia')">Wikimedia</a>,
+                    <a ng-click="selectApp('Youtube')">Youtube</a> 
+                </div>
+            </div>
+            <div class="table table-striped" class="files" id="previews">
 
                 <div id="template" class="file-row">
                 <!-- This is used as the file preview template -->
@@ -376,20 +390,8 @@ display: block;
 
                 </div>
 
-                </form>           
-                </div>
- 
-                or choose from
-                <br/>
-                <a ng-click="selectApp('Facebook')" >Facebook</a>,
-                <a ng-click="selectApp('Google')">Google Drive</a>,
-                <a ng-click="selectApp('Photos')">Google Photos</a>,
-                <a ng-click="selectApp('Flickr')">Flickr</a>,
-                <a ng-click="selectApp('Dropbox')">Dropbox</a>,
-                <a ng-click="selectApp('Wikimedia')">Wikimedia</a>,
-                <a ng-click="selectApp('Youtube')">Youtube</a> 
 
-                </div>
+            </div>
             <div ng-if="!isConnected(app) && runningApp =='Youtube'" style="text-align: center; height:227px;">
               <form id="submitVideo" class="form-horizontal upload_resource2" method="post" style="text-align: -moz-center;">                
               <div class="form-group">
