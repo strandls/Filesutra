@@ -432,15 +432,16 @@ filesutraControllers.directive('dropzone', function() {
                 thumbnailHeight: 80,
                 createImageThumbnails:true,
                 parallelUploads:20,
-                accepted:'image/*,audio/*'
+                acceptedFiles:'image/*,audio/*'
             };
 
             var eventHandlers = {
                 'drop':function() {
+                                },
+                'addedfile': function(file) {
                     $('#uploadForm').hide();
                     $('#previews').show();
-                },
-                'addedfile': function(file) {
+
 //                  file.previewElement = Dropzone.createElement(this.options.previewTemplate);
                     //file.previewElement.querySelector(".start").onclick = function() { dropzone.enqueueFile(file); };
                     $('#importBtn').prop('disabled', false).removeAttr('disabled').removeClass('active').text('Import');
