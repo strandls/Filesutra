@@ -426,8 +426,8 @@ filesutraControllers.directive('dropzone', function() {
                 uploadMultiple: false,
                 previewsContainer: "#previews", // Define the container to display the previews
                 previewTemplate : previewTemplate,
-                autoProcessQueue: false,
-                autoQueue:false,
+                autoProcessQueue: true,
+                autoQueue:true,
                 thumbnailWidth: 80,
                 thumbnailHeight: 80,
                 createImageThumbnails:true,

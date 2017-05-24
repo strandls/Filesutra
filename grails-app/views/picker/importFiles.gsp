@@ -330,12 +330,23 @@ display: block;
 
              <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center;height:227px;line-height:25px;position:relative;overflow:auto;">
              <div id="uploadForm" style="text-align: -moz-center;overflow:auto;position:absolute;height:100%;width:100%;">
-                <form id="submitIt" class="upload_resource1 dropzone" dropzone local-importing="local-importing" dropzone1="dropzone" method="post"  enctype="multipart/form-data"> 
+                <form id="submitIt" class="upload_resource1 dropzone" dropzone local-importing="local-importing" dropzone1="dropzone" method="post"  enctype="multipart/form-data" style="height:100%;"> 
                     <div class="dz-default dz-message">
                         <i class="glyphicon glyphicon-file selectFile" ng-class="{active: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false"></i>
                         <i class="glyphicon glyphicon-plus selectFile plus" ng-mouseenter="hover = true" ng-mouseleave="hover = false" ></i>
                         <br/>
                         <span class="lead">Drag and drop or click to select files to upload </span>
+                            <br/>
+                        or choose from
+                        <br/>
+                        <a ng-click="selectApp('Facebook')" >Facebook</a>,
+                        <a ng-click="selectApp('Google')">Google Drive</a>,
+                        <a ng-click="selectApp('Photos')">Google Photos</a>,
+                        <a ng-click="selectApp('Flickr')">Flickr</a>,
+                        <a ng-click="selectApp('Dropbox')">Dropbox</a>,
+                        <a ng-click="selectApp('Wikimedia')">Wikimedia</a>,
+                        <a ng-click="selectApp('Youtube')">Youtube</a> 
+        
                     </div>
 
                     <div class="fallback">
@@ -343,17 +354,6 @@ display: block;
                     </div>
                 </form>           
 
-                <div style="position:absolute;bottom:0;width:100%;left:0;right:0;"> 
-                    or choose from
-                    <br/>
-                    <a ng-click="selectApp('Facebook')" >Facebook</a>,
-                    <a ng-click="selectApp('Google')">Google Drive</a>,
-                    <a ng-click="selectApp('Photos')">Google Photos</a>,
-                    <a ng-click="selectApp('Flickr')">Flickr</a>,
-                    <a ng-click="selectApp('Dropbox')">Dropbox</a>,
-                    <a ng-click="selectApp('Wikimedia')">Wikimedia</a>,
-                    <a ng-click="selectApp('Youtube')">Youtube</a> 
-                </div>
             </div>
             <div class="table table-striped" class="files" id="previews">
 
