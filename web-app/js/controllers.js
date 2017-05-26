@@ -445,7 +445,7 @@ filesutraControllers.directive('dropzone', function() {
 
 //                  file.previewElement = Dropzone.createElement(this.options.previewTemplate);
                     //file.previewElement.querySelector(".start").onclick = function() { dropzone.enqueueFile(file); };
-                    $('#importBtn').prop('disabled', false).removeAttr('disabled').removeClass('active').text('Import');
+                    //$('#importBtn').prop('disabled', false).removeAttr('disabled').removeClass('active').text('Import');
                     scope.filesSelected = true;
                     scope.localImporting.importing = true;
 

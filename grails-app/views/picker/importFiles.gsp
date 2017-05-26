@@ -255,6 +255,23 @@ display: none;
 #previews .file-row.dz-success .delete {
 display: block;
 }
+
+.dropzone {
+background:#fff;
+border:2px dashed rgba(0,0,0,0.5);
+       box-shadow:0 2px 5px rgba(0,0,0,0.1), inset 0 0 40px rgba(0,0,0,0.1);
+       border-radius:2px;
+padding:10px;
+}
+
+.dropzone.hover {
+background:#e3e3e3;
+}
+.dropzone.dz-clickable { cursor: pointer; }
+.dropzone.dz-clickable * { cursor: default; }
+.dropzone.dz-clickable .dz-message, .dropzone.dz-clickable .dz-message * { cursor: pointer; }
+.dropzone.dz-drag-hover { border-style: solid; }
+.dropzone.dz-drag-hover .dz-message { opacity: 0.5; }
   </style>
 </head>
 
@@ -330,7 +347,7 @@ display: block;
 
              <div ng-if="!isConnected(app) && runningApp =='Local'" style="text-align: center;height:227px;line-height:25px;position:relative;overflow:auto;">
              <div id="uploadForm" style="text-align: -moz-center;overflow:auto;position:absolute;height:100%;width:100%;">
-                <form id="submitIt" class="upload_resource1 dropzone" dropzone local-importing="local-importing" dropzone1="dropzone" method="post"  enctype="multipart/form-data" style="height:100%;"> 
+                <form id="submitIt" class="upload_resource1 dropzone needsclick dz-clickable dz-started" dropzone local-importing="local-importing" dropzone1="dropzone" method="post"  enctype="multipart/form-data" style="height:100%;"> 
                     <div class="dz-default dz-message">
                         <i class="glyphicon glyphicon-file selectFile" ng-class="{active: hover}" ng-mouseenter="hover = true" ng-mouseleave="hover = false"></i>
                         <i class="glyphicon glyphicon-plus selectFile plus" ng-mouseenter="hover = true" ng-mouseleave="hover = false" ></i>
