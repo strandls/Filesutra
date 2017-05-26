@@ -132,7 +132,7 @@ username:resp.data.auth.user.@username.text()
             e.printStackTrace();
             page = 1;
         }
-        int perPage = 2;
+        int perPage = 25;
 
         String nsid = access.emailId;
         Iterator sets = pi.getList(nsid).getPhotosets().iterator();

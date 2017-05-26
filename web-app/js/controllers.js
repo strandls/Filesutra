@@ -310,7 +310,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 }
                                 $scope.items = [];
                                 $scope.afterTokenVal = items.afterval;
-                                if(items.itemResponse.length < 2){
+                                if(items.itemResponse.length < 25){
                                     $scope.showButton = false;
                                 }else{
                                     $scope.showButton = true;
@@ -335,7 +335,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                             }
                             console.log(items);
                             if(items!="error"){
-                                if(items.itemResponse.length < 2){
+                                if(items.itemResponse.length < 25){
                                     $scope.showButton = false;
                                 }else{
                                     $scope.showButton = true;
