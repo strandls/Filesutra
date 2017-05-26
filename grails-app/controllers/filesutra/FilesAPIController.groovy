@@ -146,7 +146,7 @@ class FilesAPIController {
                                 itemResponse.push(mItem)
                             }
                             render(contentType: 'text/json') {
-                                [success:true, itemResponse:itemResponse, afterval:""]
+                                [success:true, itemResponse:itemResponse, afterval:items.nextPage]
                             }
                         }else {
                             items.photo.each {
@@ -162,7 +162,7 @@ class FilesAPIController {
                                 itemResponse.push(mItem)
                             }
                             render(contentType: 'text/json') {
-                                [success:true, itemResponse:itemResponse,afterval:items.page]
+                                [success:true, itemResponse:itemResponse,afterval:items.nextPage]
                             }
                         }
     }

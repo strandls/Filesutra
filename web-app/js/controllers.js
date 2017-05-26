@@ -310,10 +310,11 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 }
                                 $scope.items = [];
                                 $scope.afterTokenVal = items.afterval;
-                                if(items.itemResponse.length < 25){
+                                if(items.itemResponse.length < 2){
                                     $scope.showButton = false;
                                 }else{
                                     $scope.showButton = true;
+                                    $scope.isDisabled = false;
                                 }
                                 console.log( $scope.showButton);
                                 for(var i=0; i< items.itemResponse.length;i++){
@@ -334,7 +335,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                             }
                             console.log(items);
                             if(items!="error"){
-                                if(items.itemResponse.length < 25){
+                                if(items.itemResponse.length < 2){
                                     $scope.showButton = false;
                                 }else{
                                     $scope.showButton = true;

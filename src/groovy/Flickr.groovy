@@ -122,8 +122,17 @@ username:resp.data.auth.user.@username.text()
     static def listItems(String folderId, String after, Access access, Auth auth) {
         PhotosetsInterface pi = getFlickrJ().getPhotosetsInterface();
         PeopleInterface photoInt = getFlickrJ().getPeopleInterface();
+        //PhotosInterface photoInt = getFlickrJ().getPhotosInterface();
         List allPhotos = [];
         List allPhotoSets =  [];
+        int page = 1;
+        try {
+            page = Integer.parseInt(after);
+        } catch(Exception e) {
+            e.printStackTrace();
+            page = 1;
+        }
+        int perPage = 2;
 
         String nsid = access.emailId;
         Iterator sets = pi.getList(nsid).getPhotosets().iterator();
@@ -131,41 +140,35 @@ username:resp.data.auth.user.@username.text()
         while (sets.hasNext()) {
             Photoset set = (Photoset) sets.next();
             if(folderId.equals(set.getId())) {
-                PhotoList photos = pi.getPhotos(set.getId(), 500, 1);
+                PhotoList photos = pi.getPhotos(set.getId(), perPage, page);
                 allPhotos.addAll(photos);
+                page++;
             } else {
                 allPhotoSets << set;
             }
         }
         if(folderId.equals('untitled')) {
             try {
-                int notInSetPage = 1;
                 Collection notInASet = new ArrayList();
                 Set extras = new HashSet();
                 extras.add(Extras.DATE_UPLOAD);
                 extras.add(Extras.DATE_TAKEN);
                 extras.add(Extras.LAST_UPDATE);
-                while (true) {
-                    Collection nis = photoInt.getPhotos(nsid, null, null, null, null, null, null, null, extras, 500, notInSetPage);
-                    println nis
+                //while (true) {
+                    Collection nis = photoInt.getPhotos(nsid, null, null, null, null, null, null, null, extras, perPage, page);
+                    //Collection nis = photoInt.getNotInSet(500, notInSetPage);
                     notInASet.addAll(nis);
-                    if (nis.size() < 500) {
-                        break;
-                    }
-                    notInSetPage++;
-                }
+        //            if (nis.size() < 500) {
+        //                break;
+        //            }
+                    page++;
+                //}
                 allPhotos.addAll(notInASet);
-                allPhotos.each {
-                    println it.id
-                    println it.datePosted
-                    println it.dateTaken
-                    println it.lastUpdate
-                }
             } catch(Exception e) {
                 e.printStackTrace();
             }
         }
-        return ['photoset':allPhotoSets, 'photo':allPhotos.sort{a,b-> b.datePosted<=>a.datePosted}];
+        return ['photoset':allPhotoSets, 'photo':allPhotos.sort{a,b-> b.datePosted<=>a.datePosted}, 'nextPage':page];
     }
 
 /*
