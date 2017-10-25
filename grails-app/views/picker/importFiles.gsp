@@ -1,27 +1,10 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: vishesh
-  Date: 05/05/15
-  Time: 7:31 PM
---%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html ng-app="filesutraApp">
 <head>
-  <title>File Sutra</title>
+  <title>File Ops</title>
   <link rel="shortcut icon" href="/images/favicon.ico" />
-
-  <link rel="stylesheet" href="/css/bootstrap.min.css">
-
-  <script src="/js/lib/jquery.min.js"></script>
-  <script src="/js/lib/angular.min.js"></script>
-  <script src="/js/lib/angular-route.min.js"></script>
-  <script src="/js/app.js"></script>
-  <script src="/js/controllers.js"></script>
-  <script src="/js/services.js"></script>
-  <script src="/js/jquery.form.min.js"></script>
-  <script src="/js/dropzone.js"></script>
-  <!--script src="http://filesutra.com/js/filesutra.js"></script-->
+  <asset:stylesheet href="application.css"/>
 
   <style>
   .container {
@@ -479,7 +462,9 @@ background:#e3e3e3;
              </div>
     </div>
   </div>
-</div>
+  </div>
+  <asset:javascript src="application.js"/>
+
 </body>
 <script type="text/javascript">
 Dropzone.autoDiscover = false;

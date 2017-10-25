@@ -11,18 +11,8 @@
   <title>File Sutra</title>
   <link rel="shortcut icon" href="/images/favicon.ico" />
 
-  <link rel="stylesheet" href="/css/bootstrap.min.css">
-
-  <script src="/js/lib/jquery.min.js"></script>
-  <script src="/js/lib/angular.min.js"></script>
-  <script src="/js/lib/angular-route.min.js"></script>
-  <script src="/js/app.js"></script>
-  <script src="/js/controllers.js"></script>
-  <script src="/js/services.js"></script>
-  <script src="/js/jquery.form.js"></script>
-  <!--script src="http://filesutra.com/js/filesutra.js"></script-->
-
-  <style>
+  <asset:stylesheet href="application.css"/>
+<style>
     li a {
       cursor: pointer;
     }
@@ -108,5 +98,7 @@
       </div>
   </div>
 </div>
+
+  <asset:javascript src="application.js"/>
 </body>
 </html>

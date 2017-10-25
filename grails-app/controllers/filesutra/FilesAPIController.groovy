@@ -137,7 +137,7 @@ class FilesAPIController {
     def itemResponse = []
     if(items) { 
                         if(folderId == "flickr"){
-                            itemResponse.push(["id":"untitled","type":"folder","name":"Not in folder"])
+                            itemResponse.push(["id":"untitled","type":"folder","name":"All Photos"])
                             items.photoset?.each {
                                 def mItem = new ApiResponse.Item();
                                 mItem.id = it.id

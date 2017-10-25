@@ -5,9 +5,15 @@
 // You're free to add application-wide JavaScript to this file, but it's generally better 
 // to create separate JavaScript files as needed.
 //
-//= require jquery
-//= require_tree .
 //= require_self
+//=require jquery.min.js
+//=require angular.min.js
+//=require angular-route.min.js
+//=require app.js
+//=require controllers.js
+//=require services.js
+//=require jquery.form.min.js
+//=require dropzone.js
 
 if (typeof jQuery !== 'undefined') {
 	(function($) {
