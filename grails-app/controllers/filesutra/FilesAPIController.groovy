@@ -118,7 +118,7 @@ class FilesAPIController {
                 itemResponse.push(mItem);
             }
             render(contentType: 'text/json') {
-                [success : true, itemResponse:itemResponse,afterval:items.paging.cursors.after];
+                [success : true, itemResponse:itemResponse,afterval:items.paging?.cursors.after];
             }
             return;
         } catch(Exception e) {
