@@ -98,7 +98,8 @@
       </div>
   </div>
 </div>
-
-  <asset:javascript src="application.js"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
+    <asset:javascript src="application.js"/>
 </body>
 </html>

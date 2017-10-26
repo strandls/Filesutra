@@ -448,7 +448,7 @@ background:#e3e3e3;
 
             <div ng-if="isConnected(app) || runningApp =='Local' || runningApp =='Youtube'" >
                 <div style="clear:both; border-top:1px solid #cfcfcf;padding-top:5px;margin-top:10px;">
-                    <a id="importBtn" class="btn btn-primary pull-right import-btn has-spinner" ng-if="app" style="text-align:center;margin-right:0px;" disabled='disabled' ng-click="import($event)"> <span class="spinner"><asset:image src="/all/spinner.gif" absolute="true"/></span> Import</a>
+                    <a id="importBtn" class="btn btn-primary pull-right import-btn has-spinner" ng-if="app" style="text-align:center;margin-right:0px;" disabled='disabled' ng-click="import($event)"> <span class="spinner"></span> Import</a>
                 </div>
     
                 <div id="total-progress" class="progress progress-striped active" style="height:35px;margin:0px;display:none;">
@@ -463,6 +463,9 @@ background:#e3e3e3;
     </div>
   </div>
   </div>
+    
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-route.min.js"></script>
   <asset:javascript src="application.js"/>
 
 </body>

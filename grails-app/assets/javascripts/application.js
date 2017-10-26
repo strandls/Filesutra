@@ -7,8 +7,6 @@
 //
 //= require_self
 //=require jquery.min.js
-//=require angular.min.js
-//=require angular-route.min.js
 //=require app.js
 //=require controllers.js
 //=require services.js
