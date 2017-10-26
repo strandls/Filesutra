@@ -102,7 +102,7 @@ grails.hibernate.osiv.readonly = false
 environments {
 development {
     grails.logging.jul.usebridge = true
-    grails.serverURL = "http://localhost.fileops.indiabiodiversity.org"
+    grails.serverURL = "http://fileops.localhost.indiabiodiversity.org"
     fileOps{
         resources {
             app.rootDir = "${userHome}/git/biodiv/app-conf"

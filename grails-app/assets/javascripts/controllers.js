@@ -310,15 +310,17 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 }
                                 $scope.items = [];
                                 $scope.afterTokenVal = items.afterval;
-                                if(items.itemResponse.length < 25){
+                                if(items.itemResponse && items.itemResponse.length < 25){
                                     $scope.showButton = false;
                                 }else{
                                     $scope.showButton = true;
                                     $scope.isDisabled = false;
                                 }
                                 console.log( $scope.showButton);
-                                for(var i=0; i< items.itemResponse.length;i++){
-                                    $scope.items.push(items.itemResponse[i]);
+                                if(items.itemResponse) {
+                                    for(var i=0; i< items.itemResponse.length;i++){
+                                        $scope.items.push(items.itemResponse[i]);
+                                    }
                                 }
                             });
                         }
@@ -334,7 +336,7 @@ filesutraControllers.controller("AppCtrl", ['$scope', '$http', '$location', "fil
                                 $scope.showBackButton = false;
                             }
                             console.log(items);
-                            if(items!="error"){
+                            if(items!="error" && items.itemResponse){
                                 if(items.itemResponse.length < 25){
                                     $scope.showButton = false;
                                 }else{

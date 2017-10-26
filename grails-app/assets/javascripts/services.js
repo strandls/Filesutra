@@ -7,18 +7,18 @@ filesutraServices.factory("fileService", ['$http', function($http) {
       if (folderId) {
         endpoint += '?folderId='+folderId+'&'+'after='+after;
       }
-      $http.get(endpoint).success(function(data) {
+      $http.get(endpoint).then(function(data) {
           console.log(data);
-          if(data.success == true) {
-            callback(data);
+          if(data.data.success == true) {
+            callback(data.data);
           } else {
-            alert(data.msg);
+            alert(data.data.msg);
             callback("error");
           }
-      }).error(function(err){
+      },function(response){
           console.log('error');
           callback("error");
-      });
+      })
     },
     getListItems: function(app, folderId, callback) {
       var endpoint = '/api/files/'+app.toLowerCase()
@@ -27,22 +27,24 @@ filesutraServices.factory("fileService", ['$http', function($http) {
       }
       $http.get(endpoint).success(function(data) {
           console.log(data);
-          if(data.success == true) {
-            callback(data);
+          if(data.data.success == true) {
+            callback(data.data);
           } else {
-            alert(data.msg);
+            alert(data.data.msg);
             callback("error");
           }
-      }).error(function(err){
+      }, function(response){
           console.log('error');
           callback("error");
-      });
-    },
+      }
+    )},
     import : function(app, item, callback) {
       var endpoint = '/api/import/'+app.toLowerCase();
-      $http.post(endpoint, {fileId: item.id, fileName: item.name, size: item.size, mimetype: item.mimetype, fileurl: item.iconurl})
-        .success(function(data) {
-          callback(data);
+      $http.post(endpoint, {fileId: item.id, fileName: item.name, size: item.size, mimetype: item.mimetype, fileurl: item.iconurl}).then(function(response) {
+          callback(response.data);
+      }, function(response){
+          console.log('error');
+          callback("error");
       });
       //var importedFile = {"filename": item.name,"url": item.iconurl,"size": item.size,"mimetype": item.mimetype}
       //callback(importedFile);
@@ -53,10 +55,13 @@ filesutraServices.factory("fileService", ['$http', function($http) {
 filesutraServices.factory("authService", ['$http', function($http) {
   return {
     logout: function(app, callback) {
-      $http.get('/auth/logout/?app='+app).success(function(data) {
-        console.log(data);
-        callback(data);
-      });
+      $http.get('/auth/logout/?app='+app).then( function(response) {
+        console.log(response.data);
+        callback(response.data);
+      }, function(response){
+          console.log('error');
+          callback("error");
+      } );
     }
   }
 }]);

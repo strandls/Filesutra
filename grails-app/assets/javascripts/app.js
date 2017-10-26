@@ -1,10 +1,11 @@
 var filesutraApp = angular.module("filesutraApp", [
+        'ngRoute',
   'filesutraControllers'
 ]);
 
-filesutraApp.config(function($locationProvider) {
-  $locationProvider.html5Mode({
+filesutraApp.config(['$locationProvider', function(e) {
+  e.html5Mode({
     enabled: false,
     requireBase: true
   });
-});
+}]);
