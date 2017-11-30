@@ -72,7 +72,10 @@ grails.project.dependency.resolution = {
         compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7'
 
         compile 'com.google.api-client:google-api-client:1.22.0'
-        compile 'com.google.oauth-client:google-oauth-client-jetty:1.22.0'
+        compile ('com.google.oauth-client:google-oauth-client-jetty:1.22.0'){
+                excludes "servlet-api"
+        }
+
         compile 'com.google.apis:google-api-services-drive:v3-rev57-1.22.0'
         compile 'com.aetrion.flickr:flickrapi:1.1'
         compile 'com.flickr4java:flickr4java:2.16'
