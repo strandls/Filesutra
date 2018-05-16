@@ -113,7 +113,7 @@ development {
 }
 pamba {
     grails.logging.jul.usebridge = false
-    grails.serverURL = "http://www.fileops.pamba.strandls.com"
+    grails.serverURL = "https://fileops.pamba.strandls.com"
     fileOps{
         resources {
             app.rootDir = "/apps/biodiv"
@@ -123,7 +123,7 @@ pamba {
 }
 kk {
     grails.logging.jul.usebridge = false
-    grails.serverURL = "http://www.fileops.indiabiodiversity.org"
+    grails.serverURL = "https://fileops.indiabiodiversity.org"
     fileOps{
         resources {
             app.rootDir = "/apps/biodiv"
